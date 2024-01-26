@@ -1,8 +1,10 @@
-CC:=gcc
-LD:=gcc
+CC:=g++
+LD:=g++
 
-CFLAGS:=-Wall -Wextra -Werror -g -std=gnu17 
-LDFLAGS:=
+CFLAGS:= -Wall -Wextra -g -std=c++20 -fPIC $(shell llvm-config --cxxflags)
+LDFLAGS := -fPIC -shared
+LDFLAGS += $(shell llvm-config --ldflags) -lncurses -lclang-cpp
+LDFLAGS += $(shell llvm-config --libs)
 
 BIN:=bin
 OBJ:=obj
@@ -10,11 +12,11 @@ SRC:=src
 INCLUDE:=include
 
 
-TARGET:=$(BIN)/test
-VALGRIND_OUT:=
+TARGET:=$(BIN)/reflection.so
+VALGRIND_OUT:=./val_out.txt
 
-SRCS:=$(shell find $(SRC) -type  f -name "*.c")
-OBJS:=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
+SRCS:=$(shell find $(SRC) -type  f -name "*.cpp")
+OBJS:=$(patsubst $(SRC)/%.cpp, $(OBJ)/%.o, $(SRCS))
 INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")
 
 DIRS:=$(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -type d))
@@ -31,7 +33,7 @@ $(TARGET): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 	@echo built $(TARGET)
 
-$(OBJ)/%.o: $(SRC)/%.c
+$(OBJ)/%.o: $(SRC)/%.cpp
 	@echo building $@
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo built $@
@@ -47,7 +49,7 @@ clean:
 	-@rm -rf $(BIN)
 
 run: $(TARGET)
-	@./$(TARGET)
+	clang -Xclang -load -Xclang $(TARGET) -Xclang -add-plugin -Xclang dump-ast -fsyntax-only testFiles/as.c
 
 valgrind:
 	@valgrind --leak-check=full \
