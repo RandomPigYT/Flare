@@ -16,10 +16,25 @@
 using namespace clang;
 
 // Define a visitor for traversing the AST
-class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
+class ASTDeclVisitor : public RecursiveASTVisitor<ASTDeclVisitor> {
+
+	char *filename;
+
 public:
+
+	ASTDeclVisitor(char *file){
+
+
+		filename = (char *)malloc(strlen(file));
+		strcpy(filename, file);
+	}
+
   // Override method for visiting all AST nodes
   bool TraverseDecl(Decl *D) {
+
+		if (TranslationUnitDecl *tr = dyn_cast<TranslationUnitDecl>(D)){
+			printf("file: %s\n", filename);
+		}
 		
 		//D->dump(llvm::outs());
 		RecordDecl *rd = clang::dyn_cast<RecordDecl>(D);
@@ -32,16 +47,15 @@ public:
 
 		if (TypedefDecl *TD = dyn_cast<TypedefDecl>(D)){
 			
-			printf("typedef: %s\t", TD->getNameAsString().c_str());
 
 			QualType q = TD->getUnderlyingType();
 			rd = q->getAsRecordDecl();
 
 			if (rd)
-				printf("%ld\n", rd->getID());
+				printf("typedef: %s\t", TD->getNameAsString().c_str());
 
-			else 
-				printf("\n");
+			if (rd)
+				printf("%ld\n", rd->getID());
 
 
 		}
@@ -55,22 +69,34 @@ public:
 
 // Define an ASTConsumer for processing the AST
 class MyASTConsumer : public ASTConsumer {
+	
+
+	char *filename;
+	ASTDeclVisitor Visitor;
+
 public:
+
+	MyASTConsumer(char *file) : filename(file), Visitor(filename){
+	}
+
   // Override method for setting up the AST visitor
   void HandleTranslationUnit(ASTContext &Context) override {
-    MyASTVisitor Visitor;
-    Visitor.TraverseDecl(Context.getTranslationUnitDecl());
+    if (Visitor.TraverseDecl(Context.getTranslationUnitDecl())){
+
+			printf("Done!\n");
+		}
 
   }
 };
 
 // Define a FrontendAction for the plugin
-class MyPluginAction : public PluginASTAction {
+class Reflection : public PluginASTAction {
 protected:
   // Override method for creating the AST consumer
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef file) override {
-    return std::make_unique<MyASTConsumer>();
+
+    return std::make_unique<MyASTConsumer>((char*)file.str().c_str());
   }
 
   // Override method for determining whether to process the AST for a given file
@@ -81,5 +107,5 @@ protected:
 };
 
 // Register the plugin with the Clang frontend
-static FrontendPluginRegistry::Add<MyPluginAction>
-X("dump-ast", "Dump the entire AST of the source code");
+static FrontendPluginRegistry::Add<Reflection>
+X("reflection", "Reflect about the source code");

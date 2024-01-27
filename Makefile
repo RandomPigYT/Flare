@@ -1,7 +1,7 @@
 CC:=g++
 LD:=g++
 
-CFLAGS:= -Wall -Wextra -g -std=c++20 -fPIC $(shell llvm-config --cxxflags)
+CFLAGS:= -Wall -Wextra -g -std=c++20 -fPIC $(shell llvm-config --cxxflags) -I.
 LDFLAGS := -fPIC -shared
 LDFLAGS += $(shell llvm-config --ldflags) -lncurses -lclang-cpp
 LDFLAGS += $(shell llvm-config --libs)
@@ -49,7 +49,7 @@ clean:
 	-@rm -rf $(BIN)
 
 run: $(TARGET)
-	clang -Xclang -load -Xclang $(TARGET) -Xclang -add-plugin -Xclang dump-ast -fsyntax-only testFiles/as.c
+	@clang -Xclang -load -Xclang $(TARGET) -Xclang -add-plugin -Xclang reflection -fsyntax-only testFiles/as.c testFiles/lol.c
 
 valgrind:
 	@valgrind --leak-check=full \
