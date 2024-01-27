@@ -74,29 +74,32 @@
 !_TAG_ROLE_DESCRIPTION!Sh!script	loaded	/loaded/
 $(OBJ)/%.o	Makefile	/^$(OBJ)\/%.o: $(SRC)\/%.cpp$/;"	t
 $(TARGET)	Makefile	/^$(TARGET): $(OBJS)$/;"	t
+ASTDeclVisitor	src/plugin.cpp	/^	ASTDeclVisitor(char *file){$/;"	f	class:ASTDeclVisitor	file:
+ASTDeclVisitor	src/plugin.cpp	/^class ASTDeclVisitor : public RecursiveASTVisitor<ASTDeclVisitor> {$/;"	c	file:
 BIN	Makefile	/^BIN:=bin$/;"	m
 C-project-template	README.md	/^# C-project-template/;"	c
 CC	Makefile	/^CC:=g++$/;"	m
 CREATE_DIR_COMMAND	Makefile	/^CREATE_DIR_COMMAND:=.\/dirs.sh$/;"	m
-CreateASTConsumer	src/plugin.cpp	/^  std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,$/;"	f	class:MyPluginAction	typeref:typename:std::unique_ptr<ASTConsumer>	file:
+CreateASTConsumer	src/plugin.cpp	/^  std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,$/;"	f	class:Reflection	typeref:typename:std::unique_ptr<ASTConsumer>	file:
 DIRS	Makefile	/^DIRS:=$(patsubst $(SRC)\/%, $(OBJ)\/%, $(shell find $(SRC)\/ -mindepth 1 -type d))$/;"	m
 HandleTranslationUnit	src/plugin.cpp	/^  void HandleTranslationUnit(ASTContext &Context) override {$/;"	f	class:MyASTConsumer	typeref:typename:void	file:
 Hi	testFiles/as.c	/^} Hi;$/;"	t	typeref:struct:__anon9d8c9a6c0108	file:
 INCLUDE	Makefile	/^INCLUDE:=include$/;"	m
 INCLUDES	Makefile	/^INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")$/;"	m
 LDFLAGS	Makefile	/^LDFLAGS := -fPIC -shared$/;"	m
+MyASTConsumer	src/plugin.cpp	/^	MyASTConsumer(char *file) : filename(file), Visitor(filename){$/;"	f	class:MyASTConsumer	file:
 MyASTConsumer	src/plugin.cpp	/^class MyASTConsumer : public ASTConsumer {$/;"	c	file:
-MyASTVisitor	src/plugin.cpp	/^class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {$/;"	c	file:
-MyPluginAction	src/plugin.cpp	/^class MyPluginAction : public PluginASTAction {$/;"	c	file:
 OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.cpp, $(OBJ)\/%.o, $(SRCS))$/;"	m
-ParseArgs	src/plugin.cpp	/^  bool ParseArgs(const CompilerInstance &CI,$/;"	f	class:MyPluginAction	typeref:typename:bool	file:
+ParseArgs	src/plugin.cpp	/^  bool ParseArgs(const CompilerInstance &CI,$/;"	f	class:Reflection	typeref:typename:bool	file:
+Reflection	src/plugin.cpp	/^class Reflection : public PluginASTAction {$/;"	c	file:
 SRC	Makefile	/^SRC:=src$/;"	m
 SRCS	Makefile	/^SRCS:=$(shell find $(SRC) -type  f -name "*.cpp")$/;"	m
 TARGET	Makefile	/^TARGET:=$(BIN)\/reflection.so$/;"	m
-TraverseDecl	src/plugin.cpp	/^  bool TraverseDecl(Decl *D) {$/;"	f	class:MyASTVisitor	typeref:typename:bool	file:
+TraverseDecl	src/plugin.cpp	/^  bool TraverseDecl(Decl *D) {$/;"	f	class:ASTDeclVisitor	typeref:typename:bool	file:
 VALGRIND_OUT	Makefile	/^VALGRIND_OUT:=.\/val_out.txt$/;"	m
-X	src/plugin.cpp	/^X("dump-ast", "Dump the entire AST of the source code");$/;"	v	typeref:typename:FrontendPluginRegistry::Add<MyPluginAction>	file:
+Visitor	src/plugin.cpp	/^	ASTDeclVisitor Visitor;$/;"	m	class:MyASTConsumer	typeref:typename:ASTDeclVisitor	file:
+X	src/plugin.cpp	/^X("reflection", "Reflect about the source code");$/;"	v	typeref:typename:FrontendPluginRegistry::Add<Reflection>	file:
 __anon4fe5c53f0108	testFiles/lol.c	/^typedef struct {$/;"	s	file:
 __anon9d8c9a6c0108	testFiles/as.c	/^typedef struct {$/;"	s	file:
 __anon9d8c9a6c0208	testFiles/as.c	/^typedef struct {$/;"	s	file:
@@ -121,6 +124,8 @@ clean	Makefile	/^clean:$/;"	t
 d	testFiles/as.c	/^		int d;$/;"	m	struct:__anon9d8c9a6c0208::__anon9d8c9a6c0408	typeref:typename:int	file:
 dirs	Makefile	/^dirs:$/;"	t
 f	testFiles/as.c	/^		int f;$/;"	m	struct:__anon9d8c9a6c0208::__anon9d8c9a6c0408	typeref:typename:int	file:
+filename	src/plugin.cpp	/^	char *filename;$/;"	m	class:ASTDeclVisitor	typeref:typename:char *	file:
+filename	src/plugin.cpp	/^	char *filename;$/;"	m	class:MyASTConsumer	typeref:typename:char *	file:
 format	Makefile	/^format:$/;"	t
 g	testFiles/as.c	/^	} g;$/;"	m	struct:__anon9d8c9a6c0208	typeref:struct:__anon9d8c9a6c0208::__anon9d8c9a6c0408	file:
 hello	testFiles/as.c	/^} hello;$/;"	t	typeref:struct:hello_t	file:
