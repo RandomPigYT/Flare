@@ -26,8 +26,14 @@ enum types_e {
   // Not primitive
   FIELD_TYPE_PTR,
   FIELD_TYPE_STRUCT,
+	FIELD_TYPE_UNION,
   FIELD_TYPE_FUNCTION,
   FIELD_TYPE_ENUM
+};
+
+enum recordTypes_e {
+	RECORD_TYPE_STRUCT,
+	RECORD_TYPE_UNION,
 };
 
 struct typeSpecifier_t {
@@ -43,7 +49,7 @@ struct functionRef_t {
   typeSpecifier_t returnType;
 };
 
-struct structRef_t {
+struct recordRef_t {
   uint64_t ID;
   std::string fileName;
 };
@@ -56,16 +62,19 @@ struct ptrRef_t {
 };
 
 struct field_t {
+	std::string name;
   typeSpecifier_t type;
   uint64_t offset;
 };
 
 struct typeInfo_t {
-  uint64_t ID;
+  int64_t ID;
   std::string fileName;
 
   // Can be empty
   std::string name;
+	
+	enum recordTypes_e recordType;
 
   // If empty after all files are processed, the type is invalid
   std::vector<std::string> aliases;

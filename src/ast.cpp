@@ -42,5 +42,12 @@ bool Reflection::ASTDeclVisitor::TraverseDecl(clang::Decl *D) {
     if (rd) printf("typedef: %s\t", td->getNameAsString().c_str());
     if (rd) printf("%ld\n", rd->getID());
   }
+
+	if (clang::FieldDecl *fd = clang::dyn_cast<clang::FieldDecl>(D)){
+		
+		Reflection::handleFieldDecl(fd, m_ctx.filename, m_ctx.typeinfo);
+
+	}
+
   return RecursiveASTVisitor<ASTDeclVisitor>::TraverseDecl(D);
 }

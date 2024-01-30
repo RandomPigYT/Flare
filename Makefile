@@ -1,7 +1,7 @@
 CC:=g++
 LD:=g++
 
-CFLAGS := -Wall -Wextra -g -std=c++20 $(shell llvm-config --cxxflags) -I.
+CFLAGS := -Wall -Wextra -g -std=c++20 -pedantic $(shell llvm-config --cxxflags) -I.
 LDFLAGS := $(shell llvm-config --ldflags) -lncurses -lclang-cpp
 LDFLAGS += $(shell llvm-config --libs)
 
@@ -29,7 +29,6 @@ CREATE_DIR_COMMAND:=./dirs.sh
 all: dirs $(TARGET)
 
 $(TARGET): $(OBJS)
-	@echo
 	@echo building $(TARGET)
 	@$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 	@echo built $(TARGET)
@@ -48,7 +47,6 @@ dirs:
 clean:
 	-@rm -rf $(OBJ)
 	-@rm -rf $(BIN)
-	-@rm $(VALGRIND_OUT)
 
 
 run: $(TARGET)

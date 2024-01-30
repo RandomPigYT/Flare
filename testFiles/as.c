@@ -8,6 +8,10 @@ typedef struct {
   int a;
 } Hi;
 
+union Hello_u{
+
+};
+
 struct helloo {
   int a;
 };
@@ -29,6 +33,8 @@ typedef struct {
 
 	int a;
 } asdklfj;
+
+typedef asdklfj gae;
 
 typedef asdklfj*** boobies;
 
