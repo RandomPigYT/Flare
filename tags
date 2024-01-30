@@ -74,32 +74,49 @@
 !_TAG_ROLE_DESCRIPTION!Sh!script	loaded	/loaded/
 $(OBJ)/%.o	Makefile	/^$(OBJ)\/%.o: $(SRC)\/%.cpp$/;"	t
 $(TARGET)	Makefile	/^$(TARGET): $(OBJS)$/;"	t
-ASTDeclVisitor	src/plugin.cpp	/^	ASTDeclVisitor(char *file){$/;"	f	class:ASTDeclVisitor	file:
-ASTDeclVisitor	src/plugin.cpp	/^class ASTDeclVisitor : public RecursiveASTVisitor<ASTDeclVisitor> {$/;"	c	file:
+ASTDeclVisitor	src/main.cpp	/^  ASTDeclVisitor(char *file) {$/;"	f	class:ASTDeclVisitor	file:
+ASTDeclVisitor	src/main.cpp	/^class ASTDeclVisitor : public RecursiveASTVisitor<ASTDeclVisitor> {$/;"	c	file:
 BIN	Makefile	/^BIN:=bin$/;"	m
 C-project-template	README.md	/^# C-project-template/;"	c
 CC	Makefile	/^CC:=g++$/;"	m
 CREATE_DIR_COMMAND	Makefile	/^CREATE_DIR_COMMAND:=.\/dirs.sh$/;"	m
-CreateASTConsumer	src/plugin.cpp	/^  std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,$/;"	f	class:Reflection	typeref:typename:std::unique_ptr<ASTConsumer>	file:
+CreateASTConsumer	src/main.cpp	/^  std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &,$/;"	f	class:Reflection	typeref:typename:std::unique_ptr<ASTConsumer>	file:
 DIRS	Makefile	/^DIRS:=$(patsubst $(SRC)\/%, $(OBJ)\/%, $(shell find $(SRC)\/ -mindepth 1 -type d))$/;"	m
-HandleTranslationUnit	src/plugin.cpp	/^  void HandleTranslationUnit(ASTContext &Context) override {$/;"	f	class:MyASTConsumer	typeref:typename:void	file:
+FIELD_TYPE_DOUBLE	src/typeinfo.hpp	/^  FIELD_TYPE_DOUBLE,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_ENUM	src/typeinfo.hpp	/^  FIELD_TYPE_ENUM$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_FLOAT	src/typeinfo.hpp	/^  FIELD_TYPE_FLOAT,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_FUNCTION	src/typeinfo.hpp	/^  FIELD_TYPE_FUNCTION,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_I16	src/typeinfo.hpp	/^  FIELD_TYPE_I16,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_I32	src/typeinfo.hpp	/^  FIELD_TYPE_I32,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_I64	src/typeinfo.hpp	/^  FIELD_TYPE_I64,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_I8	src/typeinfo.hpp	/^  FIELD_TYPE_I8,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_LONG_DOUBLE	src/typeinfo.hpp	/^  FIELD_TYPE_LONG_DOUBLE,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_PTR	src/typeinfo.hpp	/^  FIELD_TYPE_PTR,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_STRUCT	src/typeinfo.hpp	/^  FIELD_TYPE_STRUCT,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_UI16	src/typeinfo.hpp	/^  FIELD_TYPE_UI16,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_UI32	src/typeinfo.hpp	/^  FIELD_TYPE_UI32,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_UI64	src/typeinfo.hpp	/^  FIELD_TYPE_UI64,$/;"	e	enum:fieldTypes_e
+FIELD_TYPE_UI8	src/typeinfo.hpp	/^  FIELD_TYPE_UI8,$/;"	e	enum:fieldTypes_e
+HandleTranslationUnit	src/main.cpp	/^  void HandleTranslationUnit(ASTContext &Context) override {$/;"	f	class:MyASTConsumer	typeref:typename:void	file:
 Hi	testFiles/as.c	/^} Hi;$/;"	t	typeref:struct:__anon9d8c9a6c0108	file:
+ID	src/typeinfo.hpp	/^  uint64_t ID;$/;"	m	struct:structRef_t	typeref:typename:uint64_t
+ID	src/typeinfo.hpp	/^  uint64_t ID;$/;"	m	struct:typeInfo_t	typeref:typename:uint64_t
 INCLUDE	Makefile	/^INCLUDE:=include$/;"	m
 INCLUDES	Makefile	/^INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")$/;"	m
-LDFLAGS	Makefile	/^LDFLAGS := -fPIC -shared$/;"	m
-MyASTConsumer	src/plugin.cpp	/^	MyASTConsumer(char *file) : filename(file), Visitor(filename){$/;"	f	class:MyASTConsumer	file:
-MyASTConsumer	src/plugin.cpp	/^class MyASTConsumer : public ASTConsumer {$/;"	c	file:
+LDFLAGS	Makefile	/^LDFLAGS := $(shell llvm-config --ldflags) -lncurses -lclang-cpp$/;"	m
+MyASTConsumer	src/main.cpp	/^  MyASTConsumer(char *file) : filename(file), Visitor(filename) {}$/;"	f	class:MyASTConsumer	file:
+MyASTConsumer	src/main.cpp	/^class MyASTConsumer : public ASTConsumer {$/;"	c	file:
 OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.cpp, $(OBJ)\/%.o, $(SRCS))$/;"	m
-ParseArgs	src/plugin.cpp	/^  bool ParseArgs(const CompilerInstance &CI,$/;"	f	class:Reflection	typeref:typename:bool	file:
-Reflection	src/plugin.cpp	/^class Reflection : public PluginASTAction {$/;"	c	file:
+REFLECTION_HANDLE_DECL_H	src/handleDecl.hpp	/^#define REFLECTION_HANDLE_DECL_H$/;"	d
+REFLECTION_TYPEINFO_H	src/typeinfo.hpp	/^#define REFLECTION_TYPEINFO_H$/;"	d
+Reflection	src/main.cpp	/^class Reflection : public ASTFrontendAction {$/;"	c	file:
 SRC	Makefile	/^SRC:=src$/;"	m
 SRCS	Makefile	/^SRCS:=$(shell find $(SRC) -type  f -name "*.cpp")$/;"	m
-TARGET	Makefile	/^TARGET:=$(BIN)\/reflection.so$/;"	m
-TraverseDecl	src/plugin.cpp	/^  bool TraverseDecl(Decl *D) {$/;"	f	class:ASTDeclVisitor	typeref:typename:bool	file:
+TARGET	Makefile	/^TARGET:=$(BIN)\/reflection$/;"	m
+TraverseDecl	src/main.cpp	/^  bool TraverseDecl(Decl *D) {$/;"	f	class:ASTDeclVisitor	typeref:typename:bool	file:
 VALGRIND_OUT	Makefile	/^VALGRIND_OUT:=.\/val_out.txt$/;"	m
-Visitor	src/plugin.cpp	/^	ASTDeclVisitor Visitor;$/;"	m	class:MyASTConsumer	typeref:typename:ASTDeclVisitor	file:
-X	src/plugin.cpp	/^X("reflection", "Reflect about the source code");$/;"	v	typeref:typename:FrontendPluginRegistry::Add<Reflection>	file:
+Visitor	src/main.cpp	/^  ASTDeclVisitor Visitor;$/;"	m	class:MyASTConsumer	typeref:typename:ASTDeclVisitor	file:
 __anon4fe5c53f0108	testFiles/lol.c	/^typedef struct {$/;"	s	file:
 __anon9d8c9a6c0108	testFiles/as.c	/^typedef struct {$/;"	s	file:
 __anon9d8c9a6c0208	testFiles/as.c	/^typedef struct {$/;"	s	file:
@@ -113,26 +130,45 @@ a	testFiles/as.c	/^  int a;$/;"	m	struct:hello_t	typeref:typename:int	file:
 a	testFiles/as.c	/^  int a;$/;"	m	struct:helloo	typeref:typename:int	file:
 a	testFiles/lol.c	/^	int a;$/;"	m	struct:__anon4fe5c53f0108	typeref:typename:int	file:
 a	testFiles/lol.c	/^	int a;$/;"	m	struct:lol_t	typeref:typename:int	file:
+aliases	src/typeinfo.hpp	/^	std::vector<std::string> aliases;	\/\/ If empty after all files are processed, the type is inva/;"	m	struct:typeInfo_t	typeref:typename:std::vector<std::string>
 all	Makefile	/^all: dirs $(TARGET)$/;"	t
+args	src/main.cpp	/^  std::vector<std::string> args;$/;"	m	class:Reflection	typeref:typename:std::vector<std::string>	file:
 asdklfj	testFiles/as.c	/^} asdklfj;$/;"	t	typeref:struct:__anon9d8c9a6c0208	file:
 b	testFiles/as.c	/^		int b;$/;"	m	struct:__anon9d8c9a6c0208::__anon9d8c9a6c0308	typeref:typename:int	file:
 b	testFiles/as.c	/^  int b;$/;"	m	struct:hello_t	typeref:typename:int	file:
 boobies	testFiles/as.c	/^typedef asdklfj*** boobies;$/;"	t	typeref:typename:asdklfj ***	file:
 bruh	testFiles/lol.c	/^} bruh;$/;"	t	typeref:struct:__anon4fe5c53f0108	file:
 c	testFiles/as.c	/^		int c;$/;"	m	struct:__anon9d8c9a6c0208::__anon9d8c9a6c0308	typeref:typename:int	file:
+catagory	src/main.cpp	/^llvm::cl::OptionCategory catagory("Reflection");$/;"	v	typeref:typename:llvm::cl::OptionCategory
 clean	Makefile	/^clean:$/;"	t
 d	testFiles/as.c	/^		int d;$/;"	m	struct:__anon9d8c9a6c0208::__anon9d8c9a6c0408	typeref:typename:int	file:
 dirs	Makefile	/^dirs:$/;"	t
 f	testFiles/as.c	/^		int f;$/;"	m	struct:__anon9d8c9a6c0208::__anon9d8c9a6c0408	typeref:typename:int	file:
-filename	src/plugin.cpp	/^	char *filename;$/;"	m	class:ASTDeclVisitor	typeref:typename:char *	file:
-filename	src/plugin.cpp	/^	char *filename;$/;"	m	class:MyASTConsumer	typeref:typename:char *	file:
+fieldTypes_e	src/typeinfo.hpp	/^enum fieldTypes_e {$/;"	g
+field_t	src/typeinfo.hpp	/^struct field_t {$/;"	s
+fileName	src/typeinfo.hpp	/^  std::string fileName;$/;"	m	struct:structRef_t	typeref:typename:std::string
+fileName	src/typeinfo.hpp	/^  std::string fileName;$/;"	m	struct:typeInfo_t	typeref:typename:std::string
+filename	src/main.cpp	/^  char *filename;$/;"	m	class:ASTDeclVisitor	typeref:typename:char *	file:
+filename	src/main.cpp	/^  char *filename;$/;"	m	class:MyASTConsumer	typeref:typename:char *	file:
 format	Makefile	/^format:$/;"	t
 g	testFiles/as.c	/^	} g;$/;"	m	struct:__anon9d8c9a6c0208	typeref:struct:__anon9d8c9a6c0208::__anon9d8c9a6c0408	file:
 hello	testFiles/as.c	/^} hello;$/;"	t	typeref:struct:hello_t	file:
 hello_t	testFiles/as.c	/^typedef struct hello_t {$/;"	s	file:
 helloo	testFiles/as.c	/^struct helloo {$/;"	s	file:
+info	src/typeinfo.hpp	/^	void *info;$/;"	m	struct:ptrRef_t	typeref:typename:void *
+info	src/typeinfo.hpp	/^  void *info;  \/\/ Addtional info in case the type is FIELD_TYPE_STRUCT or$/;"	m	struct:field_t	typeref:typename:void *
+lmao	testFiles/as.c	/^	struct helloo ***lmao;$/;"	m	struct:__anon9d8c9a6c0208	typeref:struct:helloo ***	file:
 lol_t	testFiles/lol.c	/^struct lol_t{$/;"	s	file:
+main	src/main.cpp	/^int main(int argc, char **argv) {$/;"	f	typeref:typename:int
 main	testFiles/as.c	/^int main(void){$/;"	f	typeref:typename:int
+name	src/typeinfo.hpp	/^	std::string name;	\/\/ Can be empty$/;"	m	struct:typeInfo_t	typeref:typename:std::string
+offset	src/typeinfo.hpp	/^	uint64_t offset;$/;"	m	struct:field_t	typeref:typename:uint64_t
+pointingType	src/typeinfo.hpp	/^	enum fieldTypes_e pointingType;$/;"	m	struct:ptrRef_t	typeref:enum:fieldTypes_e
+ptrRef_t	src/typeinfo.hpp	/^struct ptrRef_t {$/;"	s
 run	Makefile	/^run: $(TARGET)$/;"	t
+structRef_t	src/typeinfo.hpp	/^struct structRef_t {$/;"	s
 testGen	testFiles/as.c	/^#define testGen(/;"	d	file:
+type	src/typeinfo.hpp	/^  enum fieldTypes_e type;$/;"	m	struct:field_t	typeref:enum:fieldTypes_e
+typeInfo_t	src/typeinfo.hpp	/^struct typeInfo_t {$/;"	s
 valgrind	Makefile	/^valgrind:$/;"	t
+~ASTDeclVisitor	src/main.cpp	/^  ~ASTDeclVisitor() { free(filename); }$/;"	f	class:ASTDeclVisitor	file:

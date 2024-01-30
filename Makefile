@@ -1,9 +1,8 @@
 CC:=g++
 LD:=g++
 
-CFLAGS:= -Wall -Wextra -g -std=c++20 -fPIC $(shell llvm-config --cxxflags) -I.
-LDFLAGS := -fPIC -shared
-LDFLAGS += $(shell llvm-config --ldflags) -lncurses -lclang-cpp
+CFLAGS := -Wall -Wextra -O2 -g -std=c++20 $(shell llvm-config --cxxflags) -I.
+LDFLAGS := $(shell llvm-config --ldflags) -lncurses -lclang-cpp
 LDFLAGS += $(shell llvm-config --libs)
 
 BIN:=bin
@@ -12,12 +11,14 @@ SRC:=src
 INCLUDE:=include
 
 
-TARGET:=$(BIN)/reflection.so
+TARGET:=$(BIN)/reflection
 VALGRIND_OUT:=./val_out.txt
 
 SRCS:=$(shell find $(SRC) -type  f -name "*.cpp")
 OBJS:=$(patsubst $(SRC)/%.cpp, $(OBJ)/%.o, $(SRCS))
 INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")
+INCLUDES += $(shell find $(INCLUDE) -type f -name "*.hpp")
+INCLUDES += $(shell find $(SRC) -type f -name "*.hpp")
 
 DIRS:=$(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -type d))
 
@@ -48,8 +49,11 @@ clean:
 	-@rm -rf $(OBJ)
 	-@rm -rf $(BIN)
 
+
 run: $(TARGET)
-	@clang -Xclang -load -Xclang $(TARGET) -Xclang -add-plugin -Xclang reflection -fsyntax-only testFiles/as.c testFiles/lol.c
+	@./$(TARGET) testFiles/as.c testFiles/lol.c -- -std=c2x
+	
+
 
 valgrind:
 	@valgrind --leak-check=full \
@@ -60,5 +64,5 @@ valgrind:
          ./$(TARGET)	"test"
 
 format:
-	@clang-format $(SRCS) $(INCLUDES) --style=Google -i
+	clang-format $(SRCS) $(INCLUDES) --style=Google -i
 

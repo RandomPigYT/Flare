@@ -1,4 +1,3 @@
-#include <GLFW/glfw3.h>
 
 typedef struct hello_t {
   int a;
@@ -26,6 +25,7 @@ typedef struct {
 		int f;
 	} g;
 
+	struct helloo ***lmao;
 
 	int a;
 } asdklfj;
