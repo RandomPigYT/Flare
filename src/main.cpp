@@ -14,23 +14,20 @@
 #include "handleDecl.hpp"
 #include "typeinfo.hpp"
 
-
 struct context_t {
   using typeInfoVec = std::vector<Reflection::typeInfo_t>;
-	
-	typeInfoVec typeinfo;
-	std::vector<const char *> args;
-	char *filename;
-};	
 
+  typeInfoVec typeinfo;
+  std::vector<const char *> args;
+  char *filename;
+};
 
 // Define a visitor for traversing the AST
 class ASTDeclVisitor : public clang::RecursiveASTVisitor<ASTDeclVisitor> {
   struct context_t &m_ctx;
 
  public:
-  ASTDeclVisitor(struct context_t &ctx) : m_ctx(ctx) {
-  }
+  ASTDeclVisitor(struct context_t &ctx) : m_ctx(ctx) {}
 
   ~ASTDeclVisitor() { free(m_ctx.filename); }
 
@@ -58,7 +55,7 @@ class ASTDeclVisitor : public clang::RecursiveASTVisitor<ASTDeclVisitor> {
       if (rd) printf("typedef: %s\t", td->getNameAsString().c_str());
       if (rd) printf("%ld\n", rd->getID());
     }
-    return RecursiveASTVisitor::TraverseDecl(D);
+    return RecursiveASTVisitor<ASTDeclVisitor>::TraverseDecl(D);
   }
 };
 
@@ -67,8 +64,7 @@ class MyASTConsumer : public clang::ASTConsumer {
   ASTDeclVisitor Visitor;
 
  public:
-  MyASTConsumer(struct context_t &ctx)
-      : Visitor(ctx) {}
+  MyASTConsumer(struct context_t &ctx) : Visitor(ctx) {}
 
   // Override method for setting up the AST visitor
   void HandleTranslationUnit(clang::ASTContext &Context) override {
@@ -85,14 +81,13 @@ class ReflectionASTAction : public clang::ASTFrontendAction {
   struct context_t &m_ctx;
 
  public:
-  ReflectionASTAction(struct context_t &ctx) : m_ctx(ctx) {};
+  ReflectionASTAction(struct context_t &ctx) : m_ctx(ctx){};
 
  protected:
   // Override method for creating the AST consumer
   std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
       clang::CompilerInstance &, clang::StringRef file) override {
-
-		m_ctx.filename = strdup(file.str().c_str());
+    m_ctx.filename = strdup(file.str().c_str());
     return std::make_unique<MyASTConsumer>(m_ctx);
   }
 };
@@ -109,7 +104,7 @@ customFrontendActionFactory(struct context_t &ctx) {
     }
 
    private:
-		struct context_t &m_ctx;
+    struct context_t &m_ctx;
   };
 
   return std::unique_ptr<clang::tooling::FrontendActionFactory>(
@@ -124,13 +119,12 @@ int main(int argc, char **argv) {
 
   llvm::cl::OptionCategory catagory("Reflection");
 
+  struct context_t ctx;
+  ctx.filename = nullptr;
 
-	struct context_t ctx;
-	ctx.filename = nullptr;
-
-	for (int i = 0; i < argc; i++){
-		ctx.args.emplace_back(argv[i]);
-	}
+  for (int i = 0; i < argc; i++) {
+    ctx.args.emplace_back(argv[i]);
+  }
 
   llvm::Expected<clang::tooling::CommonOptionsParser> optionsParser =
       clang::tooling::CommonOptionsParser::create(argc, (const char **)argv,
@@ -141,10 +135,9 @@ int main(int argc, char **argv) {
 
   tool.run(customFrontendActionFactory(ctx).get());
 
-	for (auto i : ctx.typeinfo){
-
-		std::cout << i.fileName << std::endl;
-	}
+  for (auto i : ctx.typeinfo) {
+    std::cout << i.fileName << std::endl;
+  }
 
   return 0;
 }
