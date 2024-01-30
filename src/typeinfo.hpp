@@ -7,7 +7,7 @@
 
 namespace Reflection {
 
-enum fieldTypes_e {
+enum types_e {
 	NONE = 0,
 
 	// Primitive
@@ -30,27 +30,16 @@ enum fieldTypes_e {
   FIELD_TYPE_ENUM
 };
 
-struct parameter_t {
-	enum fieldTypes_e type;
+struct typeSpecifier_t {
+	types_e type;
 
   // Only points to a valid block of memeory if type is not primitive
+	// Points to a functionRef_t, ptrRef_t, or structRef_t
 	void *info;
 };
 
 struct functionRef_t {
-	
-
-
-};
-
-struct ptrRef_t {
-  enum fieldTypes_e type;
-
-  // eg. int **a will have a level of 2, int ***a will have a level of 3
-  uint32_t level;
-
-  // Only points to a valid block of memeory if type is not primitive
-  void *info;
+	std::vector<typeSpecifier_t> parameters;
 };
 
 struct structRef_t {
@@ -58,13 +47,15 @@ struct structRef_t {
   std::string fileName;
 };
 
+struct ptrRef_t {
+	typeSpecifier_t type;
+
+  // eg. int **a will have a level of 2, int ***a will have a level of 3
+  uint32_t level;
+};
+
 struct field_t {
-  enum fieldTypes_e type;
-
-  // Addtional info in case the type is FIELD_TYPE_STRUCT, FIELD_TYPE_PTR or
-  // FIELD_TYPE_FUNCTION
-  void *info;
-
+	typeSpecifier_t type;
   uint64_t offset;
 };
 
@@ -78,7 +69,7 @@ struct typeInfo_t {
   // If empty after all files are processed, the type is invalid
   std::vector<std::string> aliases;
 
-  std::vector<struct field_t> fields;
+  std::vector<field_t> fields;
 };
 
 }  // namespace Reflection
