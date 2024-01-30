@@ -1,7 +1,7 @@
 CC:=g++
 LD:=g++
 
-CFLAGS := -Wall -Wextra -O2 -g -std=c++20 $(shell llvm-config --cxxflags) -I.
+CFLAGS := -Wall -Wextra -g -std=c++20 $(shell llvm-config --cxxflags) -I.
 LDFLAGS := $(shell llvm-config --ldflags) -lncurses -lclang-cpp
 LDFLAGS += $(shell llvm-config --libs)
 
@@ -17,8 +17,8 @@ VALGRIND_OUT:=./val_out.txt
 SRCS:=$(shell find $(SRC) -type  f -name "*.cpp")
 OBJS:=$(patsubst $(SRC)/%.cpp, $(OBJ)/%.o, $(SRCS))
 INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")
-INCLUDES += $(shell find $(INCLUDE) -type f -name "*.hpp")
-INCLUDES += $(shell find $(SRC) -type f -name "*.hpp")
+INCLUDES +=$(shell find $(INCLUDE) -type f -name "*.hpp")
+INCLUDES +=$(shell find $(SRC) -type f -name "*.hpp")
 
 DIRS:=$(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -type d))
 
@@ -48,21 +48,23 @@ dirs:
 clean:
 	-@rm -rf $(OBJ)
 	-@rm -rf $(BIN)
+	-@rm $(VALGRIND_OUT)
 
 
 run: $(TARGET)
-	@./$(TARGET) testFiles/as.c testFiles/lol.c -- -std=c2x
+	@./$(TARGET) testFiles/as.c testFiles/lol.c
 	
 
 
-valgrind:
+valgrind: dirs $(TARGET)
 	@valgrind --leak-check=full \
          --show-leak-kinds=all \
          --track-origins=yes \
          --verbose \
          --log-file=$(VALGRIND_OUT) \
-         ./$(TARGET)	"test"
+         ./$(TARGET)	testFiles/as.c testFiles/lol.c
 
-format:
-	clang-format $(SRCS) $(INCLUDES) --style=Google -i
+format: $(SRCS) $(INCLUDES)
+	@clang-format $(SRCS) $(INCLUDES) --style=Google -i
+	@echo Formatted: $(SRCS) $(INCLUDES)
 
