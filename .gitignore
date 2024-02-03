@@ -54,3 +54,5 @@ dkms.conf
 # Misc
 ./tags
 ./val_out.txt
+bin/
+obj/
