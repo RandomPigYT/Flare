@@ -14,7 +14,6 @@
 #include <iostream>
 #include <string>
 
-#include "handleDecl.hpp"
 #include "typeinfo.hpp"
 
 namespace Reflection {
@@ -25,6 +24,8 @@ struct context_t {
   typeInfoVec typeinfo;
   std::vector<const char *> args;
   char *filename;
+
+  clang::ASTContext *context;
 };
 
 std::unique_ptr<clang::tooling::FrontendActionFactory>
@@ -43,13 +44,16 @@ class ASTDeclVisitor : public clang::RecursiveASTVisitor<ASTDeclVisitor> {
 
 class MyASTConsumer : public clang::ASTConsumer {
   ASTDeclVisitor Visitor;
+  struct context_t &m_ctx;
 
  public:
-  MyASTConsumer(struct context_t &ctx) : Visitor(ctx) {}
+  MyASTConsumer(struct context_t &ctx) : Visitor(ctx), m_ctx(ctx) {}
 
   // Override method for setting up the AST visitor
   void HandleTranslationUnit(clang::ASTContext &Context) override {
-    if (Visitor.TraverseDecl(Context.getTranslationUnitDecl())) {
+    m_ctx.context = &Context;
+
+    if (Visitor.TraverseDecl(m_ctx.context->getTranslationUnitDecl())) {
       printf("Done!\n");
     }
   }

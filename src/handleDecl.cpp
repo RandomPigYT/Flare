@@ -1,48 +1,42 @@
 #include "handleDecl.hpp"
 
-void Reflection::handleRecordDecl(
-    clang::RecordDecl *rd, char *file,
-    std::vector<Reflection::typeInfo_t> &typeinfo) {
+#include <clang/AST/ASTContext.h>
+#include <clang/AST/Decl.h>
+#include <clang/AST/RecordLayout.h>
 
-	if (!rd->isStruct() && !rd->isUnion())
-		return;
-	
-	if (rd->isAnonymousStructOrUnion())
-		return;
+void Reflection::handleRecordDecl(clang::RecordDecl *rd,
+                                  struct context_t &ctx) {
+  if (!rd->isStruct() && !rd->isUnion()) return;
 
-	Reflection::typeInfo_t t;
+  if (rd->isAnonymousStructOrUnion()) return;
+
+  Reflection::typeInfo_t t;
 
   t.ID = rd->getID();
-  t.fileName.assign(file);
+  t.fileName.assign(ctx.filename);
   t.name = rd->getNameAsString();
-	t.recordType = rd->isStruct() ? RECORD_TYPE_STRUCT : RECORD_TYPE_UNION;
+  t.recordType = rd->isStruct() ? RECORD_TYPE_STRUCT : RECORD_TYPE_UNION;
 
-  typeinfo.emplace_back(t);
+  ctx.typeinfo.emplace_back(t);
 }
 
-void Reflection::handleTypedefDecl(
-    clang::TypedefDecl *td, char *file,
-    std::vector<Reflection::typeInfo_t> &typeinfo) {
-	
-	clang::QualType q = td->getUnderlyingType();
-	
-	clang::RecordDecl *rd = q->getAsRecordDecl();
-	if (!rd || (!rd->isStruct() && !rd->isUnion()))
-		return;
+void Reflection::handleTypedefDecl(clang::TypedefDecl *td,
+                                   struct context_t &ctx) {
+  clang::QualType q = td->getUnderlyingType();
 
-	for (uint64_t i = 0; i < typeinfo.size(); i++){
-		if (typeinfo[i].fileName != file || typeinfo[i].ID != rd->getID())
-			continue;
-		
-		typeinfo[i].aliases.emplace_back(td->getNameAsString());
-	}
+  clang::RecordDecl *rd = q->getAsRecordDecl();
+  if (!rd || (!rd->isStruct() && !rd->isUnion())) return;
+
+  for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
+    if (ctx.typeinfo[i].fileName != ctx.filename ||
+        ctx.typeinfo[i].ID != rd->getID())
+      continue;
+
+    ctx.typeinfo[i].aliases.emplace_back(td->getNameAsString());
+  }
 }
 
-void Reflection::handleFieldDecl(
-    clang::FieldDecl *fd, char *file,
-    std::vector<Reflection::typeInfo_t> &typeinfo) {
-
-
-
-
+void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context_t &ctx) {
+  const clang::ASTRecordLayout &layout =
+      ctx.context->getASTRecordLayout(clang::dyn_cast<clang::RecordDecl>(fd));
 }

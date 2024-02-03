@@ -26,14 +26,17 @@ enum types_e {
   // Not primitive
   FIELD_TYPE_PTR,
   FIELD_TYPE_STRUCT,
-	FIELD_TYPE_UNION,
+  FIELD_TYPE_UNION,
   FIELD_TYPE_FUNCTION,
-  FIELD_TYPE_ENUM
+  FIELD_TYPE_ENUM,
+
+  // Misc
+  FIELD_TYPE_BITFIELD
 };
 
 enum recordTypes_e {
-	RECORD_TYPE_STRUCT,
-	RECORD_TYPE_UNION,
+  RECORD_TYPE_STRUCT,
+  RECORD_TYPE_UNION,
 };
 
 struct typeSpecifier_t {
@@ -61,10 +64,14 @@ struct ptrRef_t {
   uint32_t level;
 };
 
+struct bitFieldRef_t {
+  uint32_t bitWidth;
+};
+
 struct field_t {
-	std::string name;
+  std::string name;
   typeSpecifier_t type;
-  uint64_t offset;
+  uint64_t offset;  // In bits
 };
 
 struct typeInfo_t {
@@ -73,11 +80,9 @@ struct typeInfo_t {
 
   // Can be empty
   std::string name;
-	
-	enum recordTypes_e recordType;
-
-  // If empty after all files are processed, the type is invalid
   std::vector<std::string> aliases;
+
+  enum recordTypes_e recordType;
 
   std::vector<field_t> fields;
 };

@@ -33,6 +33,7 @@ $(TARGET): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 	@echo built $(TARGET)
 
+
 $(OBJ)/%.o: $(SRC)/%.cpp
 	@echo building $@
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -65,4 +66,3 @@ valgrind: dirs $(TARGET)
 format: $(SRCS) $(INCLUDES)
 	@clang-format $(SRCS) $(INCLUDES) --style=Google -i
 	@echo Formatted: $(SRCS) $(INCLUDES)
-

@@ -38,12 +38,16 @@ int main(int argc, char **argv) {
   tool.run(Reflection::customFrontendActionFactory(ctx).get());
 
   for (auto i : ctx.typeinfo) {
-		std::cout << "Type: " << (i.recordType == Reflection::RECORD_TYPE_STRUCT ? "Struct" : "Union") << "\t";
-		std::cout << "Name: " << (i.name.length() ? i.name : "(Unnamed)") << "\tTypedefs: ";
-		for (auto j : i.aliases){
-			std::cout << j << "\t";
-		}
-		std::cout << std::endl;
+    std::cout << "Type: "
+              << (i.recordType == Reflection::RECORD_TYPE_STRUCT ? "Struct"
+                                                                 : "Union")
+              << "\t";
+    std::cout << "Name: " << (i.name.length() ? i.name : "(Unnamed)")
+              << "\tTypedefs: ";
+    for (auto j : i.aliases) {
+      std::cout << j << "\t";
+    }
+    std::cout << std::endl;
   }
 
   return 0;

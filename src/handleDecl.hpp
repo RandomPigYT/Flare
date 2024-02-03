@@ -5,16 +5,14 @@
 
 #include <vector>
 
+#include "ast.hpp"
 #include "typeinfo.hpp"
 
 namespace Reflection {
 
-void handleRecordDecl(clang::RecordDecl *rd, char *file,
-                      std::vector<typeInfo_t> &typeinfo);
-void handleTypedefDecl(clang::TypedefDecl *td, char *file,
-                       std::vector<typeInfo_t> &typeinfo);
-void handleFieldDecl(clang::FieldDecl *fd, char *file,
-                     std::vector<typeInfo_t> &typeinfo);
+void handleRecordDecl(clang::RecordDecl *rd, struct context_t &ctx);
+void handleTypedefDecl(clang::TypedefDecl *td, struct context_t &ctx);
+void handleFieldDecl(clang::FieldDecl *fd, struct context_t &ctx);
 
 }  // namespace Reflection
 

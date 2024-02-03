@@ -1,5 +1,7 @@
 #include "ast.hpp"
 
+#include "handleDecl.hpp"
+
 std::unique_ptr<clang::tooling::FrontendActionFactory>
 Reflection::customFrontendActionFactory(struct context_t &ctx) {
   class SimpleFrontendActionFactory
@@ -22,32 +24,33 @@ Reflection::customFrontendActionFactory(struct context_t &ctx) {
 bool Reflection::ASTDeclVisitor::TraverseDecl(clang::Decl *D) {
   if (clang::TranslationUnitDecl *tr =
           clang::dyn_cast<clang::TranslationUnitDecl>(D)) {
-    printf("file: %s\n\nTranslation ID: %ld\n", m_ctx.filename, tr->getID());
+    // printf("file: %s\n\nTranslation ID: %ld\n", m_ctx.filename, tr->getID());
   }
 
   // D->dump(llvm::outs());
 
   if (clang::RecordDecl *rd = clang::dyn_cast<clang::RecordDecl>(D)) {
-    printf("%s\t%ld\n", rd->getNameAsString().c_str(), rd->getID());
+    // printf("%s\t%ld\n", rd->getNameAsString().c_str(), rd->getID());
 
-    Reflection::handleRecordDecl(rd, m_ctx.filename, m_ctx.typeinfo);
+    Reflection::handleRecordDecl(rd, m_ctx);
   }
 
   if (clang::TypedefDecl *td = clang::dyn_cast<clang::TypedefDecl>(D)) {
-    Reflection::handleTypedefDecl(td, m_ctx.filename, m_ctx.typeinfo);
+    Reflection::handleTypedefDecl(td, m_ctx);
 
     clang::QualType q = td->getUnderlyingType();
     clang::RecordDecl *rd = q->getAsRecordDecl();
 
-    if (rd) printf("typedef: %s\t", td->getNameAsString().c_str());
-    if (rd) printf("%ld\n", rd->getID());
+    if (rd)
+      printf("%s\n", q.getCanonicalType().getTypePtr()->getTypeClassName());
+
+    // if (rd) printf("typedef: %s\t", td->getNameAsString().c_str());
+    // if (rd) printf("%ld\n", rd->getID());
   }
 
-	if (clang::FieldDecl *fd = clang::dyn_cast<clang::FieldDecl>(D)){
-		
-		Reflection::handleFieldDecl(fd, m_ctx.filename, m_ctx.typeinfo);
-
-	}
+  if (clang::FieldDecl *fd = clang::dyn_cast<clang::FieldDecl>(D)) {
+    Reflection::handleFieldDecl(fd, m_ctx);
+  }
 
   return RecursiveASTVisitor<ASTDeclVisitor>::TraverseDecl(D);
 }
