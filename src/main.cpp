@@ -47,7 +47,36 @@ int main(int argc, char **argv) {
     for (auto j : i.aliases) {
       std::cout << j << "\t";
     }
+
     std::cout << std::endl;
+
+    for (auto j : i.fields) {
+      if (j.type.type == Reflection::FIELD_TYPE_STRUCT ||
+          j.type.type == Reflection::FIELD_TYPE_BITFIELD)
+        std::cout << "Field:\t" << j.type.type << "\t";
+
+      if (j.type.type == Reflection::FIELD_TYPE_STRUCT) {
+        std::cout << "Name:\t"
+                  << ((struct Reflection::recordRef_t *)j.type.info)->fileName;
+      }
+    }
+    std::cout << std::endl;
+  }
+
+  for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
+    for (uint64_t j = 0; j < ctx.typeinfo[i].fields.size(); j++) {
+      if (ctx.typeinfo[i].fields[j].type.type == Reflection::FIELD_TYPE_STRUCT)
+        free(((struct Reflection::recordRef_t *)ctx.typeinfo[i]
+                  .fields[j]
+                  .type.info)
+                 ->fileName);
+
+      if (ctx.typeinfo[i].fields[j].type.type ==
+              Reflection::FIELD_TYPE_STRUCT ||
+          ctx.typeinfo[i].fields[j].type.type ==
+              Reflection::FIELD_TYPE_BITFIELD)
+        free(ctx.typeinfo[i].fields[j].type.info);
+    }
   }
 
   return 0;

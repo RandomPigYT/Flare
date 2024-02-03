@@ -16,11 +16,17 @@ struct helloo {
   int a;
 };
 
-typedef struct {
+typedef struct bruh {
 
 	struct {
 		int c;
 		int b;
+		int h;
+		
+		struct {
+
+			int f;
+		};
 
 	};
 
@@ -32,11 +38,11 @@ typedef struct {
 	struct helloo ***lmao;
 
 	int a;
-} asdklfj;
+} bruh;
 
-typedef asdklfj gae;
+typedef bruh gae;
 
-typedef asdklfj*** boobies;
+typedef bruh*** boobies;
 
 
 #define testGen(x)             \
@@ -50,11 +56,5 @@ typedef asdklfj*** boobies;
 
 int main(void){
 
-	struct {
-	
-		int a;
-	} s;
-
-	__typeof__(s) bruh;
 
 }

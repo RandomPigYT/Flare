@@ -5,6 +5,8 @@ struct lol_t{
 
 typedef struct {
 
+	int b;
+	int c;
 	int a;
 } bruh;
 

@@ -2,6 +2,7 @@
 
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/Decl.h>
+#include <clang/AST/Expr.h>
 #include <clang/AST/RecordLayout.h>
 
 #include "ast.hpp"
@@ -12,7 +13,7 @@ void Reflection::handleRecordDecl(clang::RecordDecl *rd,
 
   if (rd->isAnonymousStructOrUnion()) return;
 
-  Reflection::typeInfo_t t;
+  struct Reflection::typeInfo_t t;
 
   t.ID = rd->getID();
   t.fileName.assign(ctx.filename);
@@ -34,51 +35,77 @@ void Reflection::handleTypedefDecl(clang::TypedefDecl *td,
         ctx.typeinfo[i].ID != rd->getID())
       continue;
 
-		printf("%ld\n", i);
-
     ctx.typeinfo[i].aliases.emplace_back(td->getNameAsString());
   }
 }
 
+static int64_t findRecord(int64_t ID, std::string filename,
+                          const struct Reflection::context_t &ctx) {
+  for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
+    if (ctx.typeinfo[i].ID == ID && ctx.typeinfo[i].fileName == filename)
+      return i;
+  }
 
-static int64_t findRecord(int64_t ID, std::string filename, const struct Reflection::context_t &ctx){
-	for (uint64_t i = 0; i < ctx.typeinfo.size(); i++){
-		if (ctx.typeinfo[i].ID == ID && ctx.typeinfo[i].fileName == filename)
-			return i;
-	}
-
-	return -1;
+  return -1;
 }
 
-
 void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context_t &ctx) {
-  const clang::ASTRecordLayout &layout =
-      ctx.context->getASTRecordLayout(fd->getParent());
-
-  Reflection::field_t f;
-  f.name = fd->getNameAsString();
-  f.offset = layout.getFieldOffset(fd->getFieldIndex());
-
-  clang::QualType fieldType = fd->getType();
-
-  if (clang::RecordDecl *rd = fieldType->getAsRecordDecl()) {
-    Reflection::typeSpecifier_t spec;
-    spec.type = rd->isStruct() ? Reflection::FIELD_TYPE_STRUCT
-                               : Reflection::FIELD_TYPE_UNION;
-    spec.info = new Reflection::recordRef_t;
-
-    Reflection::recordRef_t *temp = (Reflection::recordRef_t *)spec.info;
-    temp->ID = rd->getID();
-    temp->fileName = ctx.filename;
-
-    f.type = spec;
-  
-  	ctx.typeinfo[findRecord(fd->getParent()->getID(), ctx.filename, ctx)].fields.emplace_back(f);
-
+  if (fd->getParent()->isAnonymousStructOrUnion()) {
     return;
   }
 
-	
+  const clang::ASTRecordLayout &layout =
+      ctx.context->getASTRecordLayout(fd->getParent());
+
+  struct Reflection::field_t f;
+  f.name = fd->getNameAsString();
+  f.offset = layout.getFieldOffset(fd->getFieldIndex());
+  f.type.type = Reflection::NONE;
+
+  clang::QualType fieldType = fd->getType();
+
+  if (fd->isBitField()) {
+    struct Reflection::typeSpecifier_t spec;
+    spec.type = Reflection::FIELD_TYPE_BITFIELD;
+
+    // spec.info = new struct Reflection::bitFieldRef_t;
+    spec.info = malloc(sizeof(struct Reflection::bitFieldRef_t));
+
+    struct Reflection::bitFieldRef_t *temp =
+        (struct Reflection::bitFieldRef_t *)spec.info;
+
+    clang::Expr::EvalResult res;
+    fd->getBitWidth()->EvaluateAsInt(res, *ctx.context);
+
+    temp->bitWidth = res.Val.getInt().getExtValue();
+
+    f.type = spec;
+  }
+
+  else if (clang::RecordDecl *rd = fieldType->getAsRecordDecl()) {
+    struct Reflection::typeSpecifier_t spec;
+    spec.type = rd->isStruct() ? Reflection::FIELD_TYPE_STRUCT
+                               : Reflection::FIELD_TYPE_UNION;
+    // spec.info = new struct Reflection::recordRef_t;
+    spec.info = malloc(sizeof(struct Reflection::recordRef_t));
+
+    struct Reflection::recordRef_t *temp =
+        (struct Reflection::recordRef_t *)spec.info;
+    temp->ID = rd->getID();
+    temp->fileName = strdup(ctx.filename);
+
+    f.type = spec;
+  }
+
+  int64_t typeIndex = findRecord(fd->getParent()->getID(), ctx.filename, ctx);
+  if (typeIndex < 0) {
+    fprintf(stderr, "Fatal: Failed to find type: %ld\t%s\t%s\n",
+            fd->getParent()->getID(),
+            fd->getParent()->getNameAsString().c_str(), ctx.filename);
+    exit(EXIT_FAILURE);
+  }
+
+  ctx.typeinfo[typeIndex].fields.emplace_back(f);
 
   // clang::Decl *declForField =
   // clang::dyn_cast<clang::Decl>(fd->getUnderlyingDecl());

@@ -1,5 +1,7 @@
 #include "ast.hpp"
 
+#include <clang/AST/Decl.h>
+
 #include "handleDecl.hpp"
 
 std::unique_ptr<clang::tooling::FrontendActionFactory>
@@ -41,15 +43,18 @@ bool Reflection::ASTDeclVisitor::TraverseDecl(clang::Decl *D) {
     clang::QualType q = td->getUnderlyingType();
     clang::RecordDecl *rd = q->getAsRecordDecl();
 
-    if (rd)
-      printf("%s\n", q.getCanonicalType().getTypePtr()->getTypeClassName());
-
-    // if (rd) printf("typedef: %s\t", td->getNameAsString().c_str());
-    // if (rd) printf("%ld\n", rd->getID());
+    if (rd) printf("typedef: %s\t", td->getNameAsString().c_str());
+    if (rd) printf("%ld\n", rd->getID());
   }
 
   if (clang::FieldDecl *fd = clang::dyn_cast<clang::FieldDecl>(D)) {
     Reflection::handleFieldDecl(fd, m_ctx);
+  }
+
+  if (clang::IndirectFieldDecl *ifd =
+          clang::dyn_cast<clang::IndirectFieldDecl>(D)) {
+    printf("Indirect field name: %s\t", ifd->getNameAsString().c_str());
+    printf("offset: %ld\n", m_ctx.context->getFieldOffset(ifd));
   }
 
   return RecursiveASTVisitor<ASTDeclVisitor>::TraverseDecl(D);

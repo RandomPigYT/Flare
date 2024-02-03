@@ -40,7 +40,7 @@ enum recordTypes_e {
 };
 
 struct typeSpecifier_t {
-  types_e type;
+  enum types_e type;
 
   // Only points to a valid block of memeory if type is not primitive
   // Points to a functionRef_t, ptrRef_t, or structRef_t
@@ -48,17 +48,17 @@ struct typeSpecifier_t {
 };
 
 struct functionRef_t {
-  std::vector<typeSpecifier_t> parameters;
-  typeSpecifier_t returnType;
+  std::vector<struct typeSpecifier_t> parameters;
+  struct typeSpecifier_t returnType;
 };
 
 struct recordRef_t {
   uint64_t ID;
-  std::string fileName;
+  char *fileName;
 };
 
 struct ptrRef_t {
-  typeSpecifier_t type;
+  struct typeSpecifier_t type;
 
   // eg. int **a will have a level of 2, int ***a will have a level of 3
   uint32_t level;
@@ -70,7 +70,7 @@ struct bitFieldRef_t {
 
 struct field_t {
   std::string name;
-  typeSpecifier_t type;
+  struct typeSpecifier_t type;
   uint64_t offset;  // In bits
 };
 
@@ -84,7 +84,7 @@ struct typeInfo_t {
 
   enum recordTypes_e recordType;
 
-  std::vector<field_t> fields;
+  std::vector<struct field_t> fields;
 };
 
 }  // namespace Reflection

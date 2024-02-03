@@ -1,7 +1,7 @@
 CC:=g++
 LD:=g++
 
-CFLAGS := -Wall -Wextra -g -std=c++20 -pedantic $(shell llvm-config --cxxflags) -I.
+CFLAGS := -Wall -Wextra -O0 -g -std=c++20 -pedantic $(shell llvm-config --cxxflags) -I.
 LDFLAGS := $(shell llvm-config --ldflags) -lncurses -lclang-cpp
 LDFLAGS += $(shell llvm-config --libs)
 
