@@ -7,3 +7,8 @@ typedef struct {
 
 	int a;
 } bruh;
+
+enum hello_t {
+	Hi
+
+};

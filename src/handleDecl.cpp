@@ -1,4 +1,5 @@
 #include "handleDecl.hpp"
+#include "ast.hpp"
 
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/Decl.h>
@@ -36,7 +37,36 @@ void Reflection::handleTypedefDecl(clang::TypedefDecl *td,
   }
 }
 
+
 void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context_t &ctx) {
   const clang::ASTRecordLayout &layout =
-      ctx.context->getASTRecordLayout(clang::dyn_cast<clang::RecordDecl>(fd));
+      ctx.context->getASTRecordLayout(fd->getParent());
+
+
+	Reflection::field_t f;
+	f.name = fd->getNameAsString();
+	f.offset = layout.getFieldOffset(fd->getFieldIndex());
+
+
+	clang::QualType fieldType = fd->getType();
+
+	if (clang::RecordDecl *rd = fieldType->getAsRecordDecl()) {
+		Reflection::typeSpecifier_t spec;
+		spec.type = rd->isStruct() ? Reflection::FIELD_TYPE_STRUCT : Reflection::FIELD_TYPE_UNION;
+		spec.info = malloc(sizeof(Reflection::recordRef_t));
+
+		Reflection::recordRef_t *temp = (Reflection::recordRef_t *)spec.info;
+		temp->ID = rd->getID();
+		temp->fileName = ctx.filename;
+
+		f.type = spec;
+
+		return;
+	}
+
+
+
+
+	//clang::Decl *declForField = clang::dyn_cast<clang::Decl>(fd->getUnderlyingDecl());
+
 }
