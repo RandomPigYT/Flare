@@ -19,7 +19,7 @@
 namespace Reflection {
 
 struct context_t {
-  using typeInfoVec = std::vector<Reflection::typeInfo_t>;
+  using typeInfoVec = std::vector<struct Reflection::typeInfo_t>;
 
   typeInfoVec typeinfo;
   std::vector<const char *> args;
