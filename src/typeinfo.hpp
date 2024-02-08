@@ -25,6 +25,7 @@ enum types_e {
 
   // Not primitive
   FIELD_TYPE_PTR,
+	FIELD_TYPE_ARRAY,
   FIELD_TYPE_STRUCT,
   FIELD_TYPE_UNION,
   FIELD_TYPE_FUNCTION,

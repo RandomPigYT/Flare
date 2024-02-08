@@ -55,6 +55,9 @@ bool Reflection::ASTDeclVisitor::TraverseDecl(clang::Decl *D) {
           clang::dyn_cast<clang::IndirectFieldDecl>(D)) {
     printf("Indirect field name: %s\t", ifd->getNameAsString().c_str());
     printf("offset: %ld\n", m_ctx.context->getFieldOffset(ifd));
+		
+		printf("Anon parent name: %s\n", clang::dyn_cast<clang::RecordDecl>(ifd->getAnonField()->getParent()->getParent())->getNameAsString().c_str());
+
   }
 
   return RecursiveASTVisitor<ASTDeclVisitor>::TraverseDecl(D);

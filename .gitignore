@@ -52,7 +52,7 @@ Mkfile.old
 dkms.conf
 
 # Misc
-./tags
+tags
 ./val_out.txt
 bin/
 obj/
