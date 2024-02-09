@@ -46,14 +46,14 @@ bool Reflection::ASTDeclVisitor::TraverseDecl(clang::Decl *D) {
 
   if (clang::IndirectFieldDecl *ifd =
           clang::dyn_cast<clang::IndirectFieldDecl>(D)) {
-			clang::RecordDecl *p = clang::dyn_cast<clang::RecordDecl>(D->getDeclContext());
-			if (!p->isAnonymousStructOrUnion()){
-				printf("Indirect field name: %s\t", ifd->getNameAsString().c_str());
-				printf("offset: %ld\n", m_ctx.context->getFieldOffset(ifd));
+    clang::RecordDecl *p =
+        clang::dyn_cast<clang::RecordDecl>(D->getDeclContext());
+    if (!p->isAnonymousStructOrUnion()) {
+      printf("Indirect field name: %s\t", ifd->getNameAsString().c_str());
+      printf("offset: %ld\n", m_ctx.context->getFieldOffset(ifd));
 
-				printf("Anon parent name: %s\n", p->getNameAsString().c_str());
-		}
-
+      printf("Anon parent name: %s\n", p->getNameAsString().c_str());
+    }
   }
 
   return RecursiveASTVisitor<ASTDeclVisitor>::TraverseDecl(D);
