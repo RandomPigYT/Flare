@@ -5,18 +5,18 @@
 #include "handleDecl.hpp"
 
 std::unique_ptr<clang::tooling::FrontendActionFactory>
-Reflection::customFrontendActionFactory(struct context_t &ctx) {
+Reflection::customFrontendActionFactory(struct context &ctx) {
   class SimpleFrontendActionFactory
       : public clang::tooling::FrontendActionFactory {
    public:
-    SimpleFrontendActionFactory(struct context_t &ctx) : m_ctx(ctx) {}
+    SimpleFrontendActionFactory(struct context &ctx) : m_ctx(ctx) {}
 
     std::unique_ptr<clang::FrontendAction> create() override {
       return std::make_unique<Reflection::ReflectionASTAction>(m_ctx);
     }
 
    private:
-    struct context_t &m_ctx;
+    struct context &m_ctx;
   };
 
   return std::unique_ptr<clang::tooling::FrontendActionFactory>(
@@ -24,13 +24,6 @@ Reflection::customFrontendActionFactory(struct context_t &ctx) {
 }
 
 bool Reflection::ASTDeclVisitor::TraverseDecl(clang::Decl *D) {
-  if (clang::TranslationUnitDecl *tr =
-          clang::dyn_cast<clang::TranslationUnitDecl>(D)) {
-    // printf("file: %s\n\nTranslation ID: %ld\n", m_ctx.filename, tr->getID());
-  }
-
-  // D->dump(llvm::outs());
-
   if (clang::RecordDecl *rd = clang::dyn_cast<clang::RecordDecl>(D)) {
     // printf("%s\t%ld\n", rd->getNameAsString().c_str(), rd->getID());
 
@@ -53,10 +46,13 @@ bool Reflection::ASTDeclVisitor::TraverseDecl(clang::Decl *D) {
 
   if (clang::IndirectFieldDecl *ifd =
           clang::dyn_cast<clang::IndirectFieldDecl>(D)) {
-    printf("Indirect field name: %s\t", ifd->getNameAsString().c_str());
-    printf("offset: %ld\n", m_ctx.context->getFieldOffset(ifd));
-		
-		printf("Anon parent name: %s\n", clang::dyn_cast<clang::RecordDecl>(ifd->getAnonField()->getParent()->getParent())->getNameAsString().c_str());
+			clang::RecordDecl *p = clang::dyn_cast<clang::RecordDecl>(D->getDeclContext());
+			if (!p->isAnonymousStructOrUnion()){
+				printf("Indirect field name: %s\t", ifd->getNameAsString().c_str());
+				printf("offset: %ld\n", m_ctx.context->getFieldOffset(ifd));
+
+				printf("Anon parent name: %s\n", p->getNameAsString().c_str());
+		}
 
   }
 

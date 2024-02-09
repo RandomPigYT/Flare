@@ -18,7 +18,7 @@
 
 namespace Reflection {
 
-struct context_t {
+struct context {
   using typeInfoVec = std::vector<struct Reflection::typeInfo_t>;
 
   typeInfoVec typeinfo;
@@ -29,13 +29,13 @@ struct context_t {
 };
 
 std::unique_ptr<clang::tooling::FrontendActionFactory>
-customFrontendActionFactory(struct context_t &ctx);
+customFrontendActionFactory(struct context &ctx);
 
 class ASTDeclVisitor : public clang::RecursiveASTVisitor<ASTDeclVisitor> {
-  struct context_t &m_ctx;
+  struct context &m_ctx;
 
  public:
-  ASTDeclVisitor(struct context_t &ctx) : m_ctx(ctx) {}
+  ASTDeclVisitor(struct context &ctx) : m_ctx(ctx) {}
 
   ~ASTDeclVisitor() { free(m_ctx.filename); }
 
@@ -44,10 +44,10 @@ class ASTDeclVisitor : public clang::RecursiveASTVisitor<ASTDeclVisitor> {
 
 class MyASTConsumer : public clang::ASTConsumer {
   ASTDeclVisitor Visitor;
-  struct context_t &m_ctx;
+  struct context &m_ctx;
 
  public:
-  MyASTConsumer(struct context_t &ctx) : Visitor(ctx), m_ctx(ctx) {}
+  MyASTConsumer(struct context &ctx) : Visitor(ctx), m_ctx(ctx) {}
 
   // Override method for setting up the AST visitor
   void HandleTranslationUnit(clang::ASTContext &Context) override {
@@ -62,10 +62,10 @@ class MyASTConsumer : public clang::ASTConsumer {
 class ReflectionASTAction : public clang::ASTFrontendAction {
   using typeInfoVec = std::vector<Reflection::typeInfo_t>;
 
-  struct context_t &m_ctx;
+  struct context &m_ctx;
 
  public:
-  ReflectionASTAction(struct context_t &ctx) : m_ctx(ctx){};
+  ReflectionASTAction(struct context &ctx) : m_ctx(ctx){};
 
  protected:
   // Override method for creating the AST consumer

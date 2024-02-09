@@ -8,7 +8,7 @@
 #include "ast.hpp"
 
 void Reflection::handleRecordDecl(clang::RecordDecl *rd,
-                                  struct context_t &ctx) {
+                                  struct context &ctx) {
   if (!rd->isStruct() && !rd->isUnion()) return;
 
   if (rd->isAnonymousStructOrUnion()) return;
@@ -24,7 +24,7 @@ void Reflection::handleRecordDecl(clang::RecordDecl *rd,
 }
 
 void Reflection::handleTypedefDecl(clang::TypedefDecl *td,
-                                   struct context_t &ctx) {
+                                   struct context &ctx) {
   clang::QualType q = td->getUnderlyingType();
 
   clang::RecordDecl *rd = q->getAsRecordDecl();
@@ -40,7 +40,7 @@ void Reflection::handleTypedefDecl(clang::TypedefDecl *td,
 }
 
 static int64_t findRecord(int64_t ID, std::string filename,
-                          const struct Reflection::context_t &ctx) {
+                          const struct Reflection::context &ctx) {
   for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
     if (ctx.typeinfo[i].ID == ID && ctx.typeinfo[i].fileName == filename)
       return i;
@@ -49,7 +49,7 @@ static int64_t findRecord(int64_t ID, std::string filename,
   return -1;
 }
 
-void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context_t &ctx) {
+void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx) {
   if (fd->getParent()->isAnonymousStructOrUnion()) {
     return;
   }
