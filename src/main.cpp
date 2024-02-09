@@ -50,34 +50,40 @@ int main(int argc, char **argv) {
 
     std::cout << std::endl;
 
-    for (auto j : i.fields) {
-      if (j.type.type == Reflection::FIELD_TYPE_STRUCT ||
-          j.type.type == Reflection::FIELD_TYPE_BITFIELD)
-        std::cout << "Field:\t" << j.type.type << "\t";
+    //  for (auto j : i.fields) {
+    //    if (j.type.type == Reflection::FIELD_TYPE_STRUCT ||
+    //        j.type.type == Reflection::FIELD_TYPE_BITFIELD)
+    //      std::cout << "Field:\t" << j.type.type << "\t";
 
-      if (j.type.type == Reflection::FIELD_TYPE_STRUCT) {
-        std::cout << "Name:\t"
-                  << ((struct Reflection::recordRef_t *)j.type.info)->fileName;
-      }
+    //    if (j.type.type == Reflection::FIELD_TYPE_STRUCT) {
+    //      std::cout << "Name:\t"
+    //                << ((struct Reflection::recordRef
+    //                *)j.type.info)->fileName;
+    //    }
+    //  }
+
+    for (auto j : i.fields) {
+      std::cout << j.type.type << "\t";
     }
     std::cout << std::endl;
   }
 
-//for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
-//  for (uint64_t j = 0; j < ctx.typeinfo[i].fields.size(); j++) {
-//    if (ctx.typeinfo[i].fields[j].type.type == Reflection::FIELD_TYPE_STRUCT)
-//      free(((struct Reflection::recordRef_t *)ctx.typeinfo[i]
-//                .fields[j]
-//                .type.info)
-//               ->fileName);
+  // for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
+  //   for (uint64_t j = 0; j < ctx.typeinfo[i].fields.size(); j++) {
+  //     if (ctx.typeinfo[i].fields[j].type.type ==
+  //     Reflection::FIELD_TYPE_STRUCT)
+  //       free(((struct Reflection::recordRef_t *)ctx.typeinfo[i]
+  //                 .fields[j]
+  //                 .type.info)
+  //                ->fileName);
 
-//    if (ctx.typeinfo[i].fields[j].type.type ==
-//            Reflection::FIELD_TYPE_STRUCT ||
-//        ctx.typeinfo[i].fields[j].type.type ==
-//            Reflection::FIELD_TYPE_BITFIELD)
-//      free(ctx.typeinfo[i].fields[j].type.info);
-//  }
-//}
+  //    if (ctx.typeinfo[i].fields[j].type.type ==
+  //            Reflection::FIELD_TYPE_STRUCT ||
+  //        ctx.typeinfo[i].fields[j].type.type ==
+  //            Reflection::FIELD_TYPE_BITFIELD)
+  //      free(ctx.typeinfo[i].fields[j].type.info);
+  //  }
+  //}
 
   return 0;
 }
