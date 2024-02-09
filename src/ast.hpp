@@ -19,7 +19,7 @@
 namespace Reflection {
 
 struct context {
-  using typeInfoVec = std::vector<struct Reflection::typeInfo_t>;
+  using typeInfoVec = std::vector<struct Reflection::typeInfo>;
 
   typeInfoVec typeinfo;
   std::vector<const char *> args;
@@ -60,7 +60,7 @@ class MyASTConsumer : public clang::ASTConsumer {
 };
 
 class ReflectionASTAction : public clang::ASTFrontendAction {
-  using typeInfoVec = std::vector<Reflection::typeInfo_t>;
+  using typeInfoVec = std::vector<struct Reflection::typeInfo>;
 
   struct context &m_ctx;
 
