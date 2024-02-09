@@ -12,7 +12,8 @@ namespace Reflection {
 
 void handleRecordDecl(clang::RecordDecl *rd, struct context &ctx);
 void handleTypedefDecl(clang::TypedefDecl *td, struct context &ctx);
-void handleFieldDecl(clang::FieldDecl *fd, struct context &ctx);
+void handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
+                     clang::RecordDecl *p = nullptr, int64_t offset = -1);
 
 }  // namespace Reflection
 
