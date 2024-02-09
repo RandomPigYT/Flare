@@ -7,7 +7,7 @@
 
 namespace Reflection {
 
-enum types_e {
+enum types {
   NONE = 0,
 
   // Primitive
@@ -22,12 +22,15 @@ enum types_e {
   FIELD_TYPE_FLOAT,
   FIELD_TYPE_DOUBLE,
   FIELD_TYPE_LONG_DOUBLE,
+  FIELD_TYPE_LONG_COMPLEX,
+  FIELD_TYPE_LONG_GNU_EXT_COMPLEX_INT,
 
   // Not primitive
   FIELD_TYPE_PTR,
-	FIELD_TYPE_ARRAY,
+  FIELD_TYPE_ARRAY,
   FIELD_TYPE_STRUCT,
   FIELD_TYPE_UNION,
+  FIELD_TYPE_RECORD,  // Can refer to struct or union
   FIELD_TYPE_FUNCTION,
   FIELD_TYPE_ENUM,
 
@@ -35,47 +38,52 @@ enum types_e {
   FIELD_TYPE_BITFIELD
 };
 
-enum recordTypes_e {
+enum recordTypes {
   RECORD_TYPE_STRUCT,
   RECORD_TYPE_UNION,
 };
 
-struct typeSpecifier_t {
-  enum types_e type;
+struct typeSpecifier {
+  enum types type;
 
   // Only points to a valid block of memeory if type is not primitive
   // Points to a functionRef_t, ptrRef_t, or structRef_t
   void *info;
 };
 
-struct functionRef_t {
-  std::vector<struct typeSpecifier_t> parameters;
-  struct typeSpecifier_t returnType;
+struct functionRef {
+  std::vector<struct typeSpecifier> parameters;
+  struct typeSpecifier returnType;
 };
 
-struct recordRef_t {
+struct recordRef {
   uint64_t ID;
   char *fileName;
 };
 
-struct ptrRef_t {
-  struct typeSpecifier_t type;
+struct arrayRef {
+  struct typeSpecifier type;
+  int64_t size;  // -1 if size is not known
+};
+
+struct ptrRef {
+  struct typeSpecifier type;
 
   // eg. int **a will have a level of 2, int ***a will have a level of 3
   uint32_t level;
 };
 
-struct bitFieldRef_t {
+struct bitFieldRef {
   uint32_t bitWidth;
 };
 
-struct field_t {
+struct field {
   std::string name;
-  struct typeSpecifier_t type;
+  struct typeSpecifier type;
   uint64_t offset;  // In bits
 };
 
-struct typeInfo_t {
+struct typeInfo {
   int64_t ID;
   std::string fileName;
 
@@ -83,9 +91,9 @@ struct typeInfo_t {
   std::string name;
   std::vector<std::string> aliases;
 
-  enum recordTypes_e recordType;
+  enum recordTypes recordType;
 
-  std::vector<struct field_t> fields;
+  std::vector<struct field> fields;
 };
 
 }  // namespace Reflection
