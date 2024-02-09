@@ -2,48 +2,43 @@
 typedef struct hello_t {
   int a;
   int b;
+  int (*f)(int);
 } hello;
 
 typedef struct {
   int a;
 } Hi;
 
-union Hello_u{
-
-};
+union Hello_u {};
 
 struct helloo {
   int a;
 };
 
 typedef struct bruh {
+  struct {
+    int c;
+    int b;
+    int h;
 
-	struct {
-		int c;
-		int b;
-		int h;
-		
-		struct {
+    struct {
+      int f;
+    };
+  };
 
-			int f;
-		};
+  struct {
+    int d;
+    int f;
+  } g;
 
-	};
+  struct helloo*** lmao;
 
-	struct {
-		int d;
-		int f;
-	} g;
-
-	struct helloo ***lmao;
-
-	int a;
+  int a;
 } bruh;
 
 typedef bruh gae;
 
 typedef bruh*** boobies;
-
 
 #define testGen(x)             \
   _Generic((x),                \
@@ -51,10 +46,7 @@ typedef bruh*** boobies;
       hello: "Hello",          \
       Hi: "Hi",                \
       struct helloo: "Helloo", \
-			__typeof__(l): "GG",\
+      __typeof__(l): "GG",     \
       default: "Whee")
 
-int main(void){
-
-
-}
+int main(void) {}

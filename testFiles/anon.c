@@ -1,29 +1,30 @@
 
 typedef struct bruh {
+  struct {
+    int c;
+    int b;
+    int h;
 
-	struct {
-		int c;
-		int b;
-		int h;
-		
-		struct {
+    struct {
+      int f;
+    };
+  };
 
-			int f;
-		};
+  struct {
+    int d;
+    int f;
+  } g;
 
-	};
+  struct helloo **lmao;
 
-	struct {
-		int d;
-		int f;
-	} g;
+  int m[69];
 
-	struct helloo ***lmao;
+  int a;
 
-	int a;
+  int n[];
 } bruh;
 
 struct shit {
-	int a : 23;
-	int b: 23;
+  int a : 23;
+  int b : 23;
 };
