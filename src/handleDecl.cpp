@@ -150,8 +150,8 @@ static struct Reflection::typeSpecifier constructPtrSpec(
 
   setPtrRef(temp, type);
 
-  std::cout << "record type? " << type->getPointeeType()->isFunctionType()
-            << std::endl;
+  // std::cout << "record type? " << type->getPointeeType()->isFunctionType()
+  //           << std::endl;
 
   return spec;
 }
@@ -163,6 +163,7 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
   }
 
   clang::RecordDecl *parent = !p ? fd->getParent() : p;
+  if (parent->isInvalidDecl()) return;
 
   const clang::ASTRecordLayout &layout =
       ctx.context->getASTRecordLayout(parent);
@@ -178,15 +179,15 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
   enum Reflection::types typeEnum = getFieldType(fd, fieldType);
 
   // Experimentation
-  if (fieldType->isArrayType() && fieldType->isConstantArrayType())
-    printf("array size: %ld\n",
-           clang::dyn_cast<clang::ConstantArrayType>(fieldType.getTypePtr())
-               ->getSize()
-               .getSExtValue());
-  else if (fieldType->isArrayType())
-    printf("Not constant array type: %s\tparent: %s\tfilename: %s\n",
-           fd->getNameAsString().c_str(), parent->getNameAsString().c_str(),
-           ctx.filename);
+  // if (fieldType->isArrayType() && fieldType->isConstantArrayType())
+  //   printf("array size: %ld\n",
+  //          clang::dyn_cast<clang::ConstantArrayType>(fieldType.getTypePtr())
+  //              ->getSize()
+  //              .getSExtValue());
+  // else if (fieldType->isArrayType())
+  //   printf("Not constant array type: %s\tparent: %s\tfilename: %s\n",
+  //          fd->getNameAsString().c_str(), parent->getNameAsString().c_str(),
+  //          ctx.filename);
 
   if (typeEnum == Reflection::FIELD_TYPE_BITFIELD) {
     f.type = constructBitFieldSpec(fd, ctx.context);

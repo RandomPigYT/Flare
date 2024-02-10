@@ -1,6 +1,6 @@
 
 typedef struct bruh {
-  struct {
+  union {
     int c;
     int b;
     int h;

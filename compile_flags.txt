@@ -5,6 +5,8 @@
 /usr/lib/clang/16/include
 -I
 /usr/include
+-I
+/usr/linux
 -D_GNU_SOURCE
 -D__STDC_CONSTANT_MACROS 
 -D__STDC_FORMAT_MACROS
