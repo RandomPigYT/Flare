@@ -24,10 +24,13 @@ enum types {
   FIELD_TYPE_LONG_DOUBLE,
   FIELD_TYPE_COMPLEX,
   FIELD_TYPE_GNU_EXT_COMPLEX_INT,
+  FIELD_TYPE_VOID,
+  FIELD_TYPE_PRIMITIVE,  // A catch-all for all primitive types
 
   // Not primitive
   FIELD_TYPE_PTR,
   FIELD_TYPE_ARRAY,
+  FIELD_TYPE_CONSTANT_ARRAY,
   FIELD_TYPE_STRUCT,
   FIELD_TYPE_UNION,
   FIELD_TYPE_RECORD,  // Can refer to struct or union
@@ -57,7 +60,12 @@ struct functionRef {
 };
 
 struct recordRef {
-  uint64_t ID;
+  int64_t ID;
+  char *fileName;
+};
+
+struct enumRef {
+  int64_t ID;
   char *fileName;
 };
 
@@ -83,6 +91,11 @@ struct field {
   uint64_t offset;  // In bits
 };
 
+struct enumConstant {
+  char *name;
+  int32_t value;
+};
+
 struct typeInfo {
   int64_t ID;
   std::string fileName;
@@ -94,6 +107,16 @@ struct typeInfo {
   enum recordTypes recordType;
 
   std::vector<struct field> fields;
+};
+
+struct enumInfo {
+  int64_t ID;
+  std::string fileName;
+
+  std::string name;
+  std::vector<std::string> aliases;
+
+  std::vector<struct enumConstant> constants;
 };
 
 }  // namespace Reflection

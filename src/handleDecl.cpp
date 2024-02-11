@@ -1,3 +1,4 @@
+
 #include "handleDecl.hpp"
 
 #include <clang/AST/ASTContext.h>
@@ -8,6 +9,7 @@
 #include <llvm/IR/DerivedTypes.h>
 
 #include "ast.hpp"
+#include "constructSpec.hpp"
 
 void Reflection::handleRecordDecl(clang::RecordDecl *rd, struct context &ctx) {
   if (!rd->isStruct() && !rd->isUnion()) return;
@@ -40,32 +42,30 @@ void Reflection::handleTypedefDecl(clang::TypedefDecl *td,
   }
 }
 
-// clang-format off
-
-static struct Reflection::typeSpecifier constructRecordSpec(clang::RecordDecl *rd, const char *filename);
-static struct Reflection::typeSpecifier constructBitFieldSpec(clang::FieldDecl *fd, const clang::ASTContext *context);
-static struct Reflection::typeSpecifier constructPtrSpec(const clang::PointerType *type, const struct Reflection::context &ctx);
-static struct Reflection::typeSpecifier constructArraySpec();
-static struct Reflection::typeSpecifier constructPrimitiveSpec();
-
-// clang-format on
-
 static enum Reflection::types getFieldType(clang::FieldDecl *fd,
                                            clang::QualType type) {
   if (fd->isBitField()) {
     return Reflection::FIELD_TYPE_BITFIELD;
   }
 
-  if (type->getAsRecordDecl()) {
+  if (type->isRecordType()) {
     return Reflection::FIELD_TYPE_RECORD;
+  }
+
+  if (type->isArrayType()) {
+    return Reflection::FIELD_TYPE_ARRAY;
   }
 
   if (type->isPointerType()) {
     return Reflection::FIELD_TYPE_PTR;
   }
 
-  if (type->isArrayType()) {
-    return Reflection::FIELD_TYPE_ARRAY;
+  if (type->isEnumeralType()) {
+    return Reflection::FIELD_TYPE_ENUM;
+  }
+
+  if (type->isFunctionType()) {
+    return Reflection::FIELD_TYPE_FUNCTION;
   }
 
   // TODO: Test for primitive types
@@ -74,23 +74,6 @@ static enum Reflection::types getFieldType(clang::FieldDecl *fd,
 }
 
 // For arrays and pointers
-static enum Reflection::types getPointeeType(clang::QualType type) {
-  if (type->getAsRecordDecl()) {
-    return Reflection::FIELD_TYPE_RECORD;
-  }
-
-  if (type->isPointerType()) {
-    return Reflection::FIELD_TYPE_PTR;
-  }
-
-  if (type->isArrayType()) {
-    return Reflection::FIELD_TYPE_ARRAY;
-  }
-
-  // TODO: Test for primitive types
-
-  return Reflection::NONE;
-}
 
 static int64_t findRecord(int64_t ID, std::string filename,
                           const struct Reflection::context &ctx) {
@@ -100,60 +83,6 @@ static int64_t findRecord(int64_t ID, std::string filename,
   }
 
   return -1;
-}
-
-static void setPtrRef(struct Reflection::ptrRef *p,
-                      const clang::PointerType *ptrType) {}
-
-static struct Reflection::typeSpecifier constructRecordSpec(
-    clang::RecordDecl *rd, const char *filename) {
-  struct Reflection::typeSpecifier spec;
-  spec.type = rd->isStruct() ? Reflection::FIELD_TYPE_STRUCT
-                             : Reflection::FIELD_TYPE_UNION;
-
-  spec.info = malloc(sizeof(struct Reflection::recordRef));
-
-  struct Reflection::recordRef *temp =
-      (struct Reflection::recordRef *)spec.info;
-  temp->ID = rd->getID();
-  temp->fileName = strdup(filename);
-
-  return spec;
-}
-
-static struct Reflection::typeSpecifier constructBitFieldSpec(
-    clang::FieldDecl *fd, const clang::ASTContext *context) {
-  struct Reflection::typeSpecifier spec;
-  spec.type = Reflection::FIELD_TYPE_BITFIELD;
-
-  spec.info = malloc(sizeof(struct Reflection::bitFieldRef));
-
-  struct Reflection::bitFieldRef *temp =
-      (struct Reflection::bitFieldRef *)spec.info;
-
-  clang::Expr::EvalResult res;
-  fd->getBitWidth()->EvaluateAsInt(res, *context);
-
-  temp->bitWidth = res.Val.getInt().getExtValue();
-
-  return spec;
-}
-
-static struct Reflection::typeSpecifier constructPtrSpec(
-    const clang::PointerType *type, const struct Reflection::context &) {
-  struct Reflection::typeSpecifier spec;
-  spec.type = Reflection::FIELD_TYPE_PTR;
-
-  spec.info = malloc(sizeof(struct Reflection::ptrRef));
-
-  struct Reflection::ptrRef *temp = (struct Reflection::ptrRef *)spec.info;
-
-  setPtrRef(temp, type);
-
-  // std::cout << "record type? " << type->getPointeeType()->isFunctionType()
-  //           << std::endl;
-
-  return spec;
 }
 
 void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
@@ -190,15 +119,16 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
   //          ctx.filename);
 
   if (typeEnum == Reflection::FIELD_TYPE_BITFIELD) {
-    f.type = constructBitFieldSpec(fd, ctx.context);
+    f.type = Reflection::constructBitFieldSpec(fd, ctx.context);
   }
 
   else if (typeEnum == Reflection::FIELD_TYPE_RECORD) {
-    f.type = constructRecordSpec(fieldType->getAsRecordDecl(), ctx.filename);
+    f.type = Reflection::constructRecordSpec(fieldType->getAsRecordDecl(),
+                                             ctx.filename);
   }
 
   else if (typeEnum == Reflection::FIELD_TYPE_PTR) {
-    f.type = constructPtrSpec(
+    f.type = Reflection::constructPtrSpec(
         clang::dyn_cast<clang::PointerType>(fieldType.getTypePtr()), ctx);
   }
 

@@ -1,0 +1,3 @@
+struct hi {
+  void *a;
+};
