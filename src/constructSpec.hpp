@@ -2,6 +2,7 @@
 #define REFLECTION_CONSTRUCT_SPEC_H
 
 #include <clang/AST/Decl.h>
+#include <clang/AST/Type.h>
 
 #include "ast.hpp"
 #include "typeinfo.hpp"
@@ -21,7 +22,7 @@ struct Reflection::typeSpecifier constructArraySpec();
 
 struct Reflection::typeSpecifier constructFunctionpec();
 
-struct Reflection::typeSpecifier constructPrimitiveSpec();
+struct Reflection::typeSpecifier constructPrimitiveSpec(clang::QualType type);
 
 }  // namespace Reflection
 

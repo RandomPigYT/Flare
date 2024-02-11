@@ -70,7 +70,7 @@ static enum Reflection::types getFieldType(clang::FieldDecl *fd,
 
   // TODO: Test for primitive types
 
-  return Reflection::NONE;
+  return Reflection::FIELD_TYPE_PRIMITIVE;
 }
 
 // For arrays and pointers

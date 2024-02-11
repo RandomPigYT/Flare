@@ -68,11 +68,11 @@ static void setPtrRef(struct Reflection::ptrRef *p,
   clang::QualType temp = type->getPointeeType();
   uint32_t level = 1;
   while (temp->isPointerType()) {
-    printf("HI!\n");
     temp = temp->getPointeeType();
     level++;
   }
 
+  printf("Level: %d\n", level);
   p->level = level;
 
   enum Reflection::types typeEnum = getPointeeType(temp);
@@ -98,6 +98,15 @@ struct Reflection::typeSpecifier Reflection::constructPtrSpec(
 
   // std::cout << "record type? " << type->getPointeeType()->isFunctionType()
   //           << std::endl;
+
+  return spec;
+}
+
+struct Reflection::typeSpecifier Reflection::constructPrimitiveSpec(
+    clang::QualType) {
+  struct Reflection::typeSpecifier spec;
+
+  // TODO: Implement this, you lazy procrastinating fuck
 
   return spec;
 }
