@@ -12,6 +12,7 @@
 #include "ast.hpp"
 #include "handleDecl.hpp"
 #include "typeinfo.hpp"
+#include "context.hpp"
 
 int main(int argc, char **argv) {
 	if (argc <= 1) {
