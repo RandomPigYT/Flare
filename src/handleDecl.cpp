@@ -174,7 +174,7 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
 		(offset == -1 ? layout.getFieldOffset(fd->getFieldIndex()) : offset);
 	f.type.type = Reflection::NONE;
 
-	clang::QualType fieldType = fd->getType();
+	clang::QualType fieldType = fd->getType().getCanonicalType();
 
 	enum Reflection::types typeEnum = getFieldType(fd, fieldType);
 
