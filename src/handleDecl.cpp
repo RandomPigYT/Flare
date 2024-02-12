@@ -7,7 +7,7 @@
 #include <clang/AST/Type.h>
 #include <llvm/IR/DerivedTypes.h>
 
-#include "ast.hpp"
+#include "context.hpp"
 #include "constructSpec.hpp"
 
 void Reflection::handleRecordDecl(clang::RecordDecl *rd, struct context &ctx) {
