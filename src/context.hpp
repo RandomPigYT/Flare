@@ -7,15 +7,15 @@
 namespace Reflection {
 
 struct context {
-	using typeInfoVec = std::vector<struct Reflection::typeInfo>;
-	using enumInfoVec = std::vector<struct Reflection::enumInfo>;
+  using typeInfoVec = std::vector<struct Reflection::typeInfo>;
+  using enumInfoVec = std::vector<struct Reflection::enumInfo>;
 
-	typeInfoVec typeinfo;
-	enumInfoVec enumInfo;
-	std::vector<const char *> args;
-	char *filename;
+  typeInfoVec typeinfo;
+  enumInfoVec enumInfo;
+  std::vector<const char *> args;
+  char *filename;
 
-	clang::ASTContext *context;
+  clang::ASTContext *context;
 };
 
 }

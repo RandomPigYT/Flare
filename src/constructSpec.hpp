@@ -10,14 +10,14 @@
 namespace Reflection {
 
 struct Reflection::typeSpecifier constructRecordSpec(clang::RecordDecl *rd,
-																										 const char *filename);
+                                                     const char *filename);
 
 struct Reflection::typeSpecifier
 constructBitFieldSpec(clang::FieldDecl *fd, const clang::ASTContext *context);
 
 struct Reflection::typeSpecifier
 constructPtrSpec(const clang::PointerType *type,
-								 const struct Reflection::context &ctx);
+                 const struct Reflection::context &ctx);
 
 struct Reflection::typeSpecifier constructArraySpec();
 

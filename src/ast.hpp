@@ -20,56 +20,56 @@ std::unique_ptr<clang::tooling::FrontendActionFactory>
 customFrontendActionFactory(struct context &ctx);
 
 class ASTDeclVisitor : public clang::RecursiveASTVisitor<ASTDeclVisitor> {
-	struct context &m_ctx;
+  struct context &m_ctx;
 
-	public:
-	ASTDeclVisitor(struct context &ctx)
-		: m_ctx(ctx) {
-	}
+  public:
+  ASTDeclVisitor(struct context &ctx)
+    : m_ctx(ctx) {
+  }
 
-	~ASTDeclVisitor() {
-		free(m_ctx.filename);
-	}
+  ~ASTDeclVisitor() {
+    free(m_ctx.filename);
+  }
 
-	bool TraverseDecl(clang::Decl *D);
+  bool TraverseDecl(clang::Decl *D);
 };
 
 class MyASTConsumer : public clang::ASTConsumer {
-	ASTDeclVisitor Visitor;
-	struct context &m_ctx;
+  ASTDeclVisitor Visitor;
+  struct context &m_ctx;
 
-	public:
-	MyASTConsumer(struct context &ctx)
-		: Visitor(ctx)
-		, m_ctx(ctx) {
-	}
+  public:
+  MyASTConsumer(struct context &ctx)
+    : Visitor(ctx)
+    , m_ctx(ctx) {
+  }
 
-	// Override method for setting up the AST visitor
-	void HandleTranslationUnit(clang::ASTContext &Context) override {
-		m_ctx.context = &Context;
+  // Override method for setting up the AST visitor
+  void HandleTranslationUnit(clang::ASTContext &Context) override {
+    m_ctx.context = &Context;
 
-		if (Visitor.TraverseDecl(m_ctx.context->getTranslationUnitDecl())) {
-			printf("Done!\n");
-		}
-	}
+    if (Visitor.TraverseDecl(m_ctx.context->getTranslationUnitDecl())) {
+      printf("Done!\n");
+    }
+  }
 };
 
 class ReflectionASTAction : public clang::ASTFrontendAction {
-	using typeInfoVec = std::vector<struct Reflection::typeInfo>;
+  using typeInfoVec = std::vector<struct Reflection::typeInfo>;
 
-	struct context &m_ctx;
+  struct context &m_ctx;
 
-	public:
-	ReflectionASTAction(struct context &ctx)
-		: m_ctx(ctx){};
+  public:
+  ReflectionASTAction(struct context &ctx)
+    : m_ctx(ctx){};
 
-	protected:
-	// Override method for creating the AST consumer
-	std::unique_ptr<clang::ASTConsumer>
-	CreateASTConsumer(clang::CompilerInstance &, clang::StringRef file) override {
-		m_ctx.filename = strdup(file.str().c_str());
-		return std::make_unique<MyASTConsumer>(m_ctx);
-	}
+  protected:
+  // Override method for creating the AST consumer
+  std::unique_ptr<clang::ASTConsumer>
+  CreateASTConsumer(clang::CompilerInstance &, clang::StringRef file) override {
+    m_ctx.filename = strdup(file.str().c_str());
+    return std::make_unique<MyASTConsumer>(m_ctx);
+  }
 };
 
 } // namespace Reflection
