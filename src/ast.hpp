@@ -16,18 +16,6 @@
 
 namespace Reflection {
 
-struct context {
-	using typeInfoVec = std::vector<struct Reflection::typeInfo>;
-	using enumInfoVec = std::vector<struct Reflection::enumInfo>;
-
-	typeInfoVec typeinfo;
-	enumInfoVec enumInfo;
-	std::vector<const char *> args;
-	char *filename;
-
-	clang::ASTContext *context;
-};
-
 std::unique_ptr<clang::tooling::FrontendActionFactory>
 customFrontendActionFactory(struct context &ctx);
 
