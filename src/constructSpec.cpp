@@ -66,11 +66,7 @@ static enum Reflection::types getPointeeType(clang::QualType type) {
 static void setPtrRef(struct Reflection::ptrRef *p,
 											const clang::PointerType *type,
 											const struct Reflection::context &ctx) {
-	clang::QualType desugared = type->desugar();
-
-	printf("%p\n", desugared);
-
-	clang::QualType temp = desugared->getPointeeType();
+	clang::QualType temp = type->getPointeeType();
 	uint32_t level = 1;
 	while (temp->isPointerType()) {
 		temp = temp->getPointeeType();
