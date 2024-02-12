@@ -64,5 +64,5 @@ valgrind: dirs $(TARGET)
          ./$(TARGET)	testFiles/as.c testFiles/lol.c
 
 format: $(SRCS) $(INCLUDES)
-	@clang-format $(SRCS) $(INCLUDES) --style=Google -i
+	@clang-format $(SRCS) $(INCLUDES) --style=file:/home/randompigyt/.clang_frmt/.clang-format -i
 	@echo Formatted: $(SRCS) $(INCLUDES)

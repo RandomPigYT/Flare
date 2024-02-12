@@ -1,4 +1,3 @@
-
 #include "handleDecl.hpp"
 
 #include <clang/AST/ASTContext.h>
@@ -12,135 +11,208 @@
 #include "constructSpec.hpp"
 
 void Reflection::handleRecordDecl(clang::RecordDecl *rd, struct context &ctx) {
-  if (!rd->isStruct() && !rd->isUnion()) return;
+	if (!rd->isStruct() && !rd->isUnion())
+		return;
 
-  if (rd->isAnonymousStructOrUnion()) return;
+	if (rd->isAnonymousStructOrUnion())
+		return;
 
-  struct Reflection::typeInfo t;
+	struct Reflection::typeInfo t;
 
-  t.ID = rd->getID();
-  t.fileName.assign(ctx.filename);
-  t.name = rd->getNameAsString();
-  t.recordType = rd->isStruct() ? RECORD_TYPE_STRUCT : RECORD_TYPE_UNION;
+	t.ID = rd->getID();
+	t.fileName.assign(ctx.filename);
+	t.name = rd->getNameAsString();
+	if (t.name.length()) {
+		t.name = (rd->isStruct() ? "struct " : "union ") + t.name;
+	}
 
-  ctx.typeinfo.emplace_back(t);
+	t.recordType = rd->isStruct() ? Reflection::RECORD_TYPE_STRUCT
+																: Reflection::RECORD_TYPE_UNION;
+
+	ctx.typeinfo.emplace_back(t);
+}
+
+void Reflection::handleEnumDecl(clang::EnumDecl *ed, struct context &ctx) {
+	struct Reflection::enumInfo e;
+
+	e.ID = ed->getID();
+	e.fileName.assign(ctx.filename);
+	e.name = ed->getNameAsString();
+	if (e.name.length()) {
+		e.name = "enum " + e.name;
+	}
+
+	ctx.enumInfo.emplace_back(e);
+}
+
+static int64_t findEnum(int64_t ID, std::string filename,
+												const struct Reflection::context &ctx) {
+	for (uint64_t i = 0; i < ctx.enumInfo.size(); i++) {
+		if (ctx.enumInfo[i].ID == ID && ctx.enumInfo[i].fileName == filename)
+			return i;
+	}
+
+	return -1;
+}
+
+void Reflection::handleEnumConstantDecl(clang::EnumConstantDecl *ecd,
+																				struct context &ctx) {
+	clang::EnumDecl *parent =
+		clang::dyn_cast<clang::EnumDecl>(ecd->getDeclContext());
+	struct Reflection::enumConstant ec;
+
+	ec.name = ecd->getNameAsString();
+	ec.value = ecd->getInitVal().getExtValue();
+
+	int64_t enumIndex = findEnum(parent->getID(), ctx.filename, ctx);
+	if (enumIndex == -1) {
+		fprintf(stderr, "Fatal: Failed to find enum: %ld\t%s\t%s\n",
+						parent->getID(), parent->getNameAsString().c_str(), ctx.filename);
+		exit(EXIT_FAILURE);
+	}
+
+	ctx.enumInfo[enumIndex].constants.emplace_back(ec);
 }
 
 void Reflection::handleTypedefDecl(clang::TypedefDecl *td,
-                                   struct context &ctx) {
-  clang::QualType q = td->getUnderlyingType();
+																	 struct context &ctx) {
+	clang::QualType q = td->getUnderlyingType();
 
-  clang::RecordDecl *rd = q->getAsRecordDecl();
-  if (!rd || (!rd->isStruct() && !rd->isUnion())) return;
+EnumType:
+	if (!q->isEnumeralType()) {
+		goto RecordType;
+	}
 
-  for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
-    if (ctx.typeinfo[i].fileName != ctx.filename ||
-        ctx.typeinfo[i].ID != rd->getID())
-      continue;
+	for (uint64_t i = 0; i < ctx.enumInfo.size(); i++) {
+		if (ctx.enumInfo[i].fileName != ctx.filename ||
+				ctx.enumInfo[i].ID != td->getUnderlyingDecl()->getID()) {
+			continue;
+		}
+		ctx.enumInfo[i].aliases.emplace_back(td->getNameAsString());
+	}
 
-    ctx.typeinfo[i].aliases.emplace_back(td->getNameAsString());
-  }
+	return;
+
+RecordType:
+	clang::RecordDecl *rd = q->getAsRecordDecl();
+	if (!rd || !(rd->isStruct() || rd->isUnion()))
+		return;
+
+	for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
+		if (ctx.typeinfo[i].fileName != ctx.filename ||
+				ctx.typeinfo[i].ID != rd->getID()) {
+			continue;
+		}
+
+		ctx.typeinfo[i].aliases.emplace_back(td->getNameAsString());
+	}
 }
 
 static enum Reflection::types getFieldType(clang::FieldDecl *fd,
-                                           clang::QualType type) {
-  if (fd->isBitField()) {
-    return Reflection::FIELD_TYPE_BITFIELD;
-  }
+																					 clang::QualType type) {
+	if (fd->isBitField()) {
+		return Reflection::FIELD_TYPE_BITFIELD;
+	}
 
-  if (type->isRecordType()) {
-    return Reflection::FIELD_TYPE_RECORD;
-  }
+	if (type->isRecordType()) {
+		return Reflection::FIELD_TYPE_RECORD;
+	}
 
-  if (type->isArrayType()) {
-    return Reflection::FIELD_TYPE_ARRAY;
-  }
+	if (type->isArrayType()) {
+		return Reflection::FIELD_TYPE_ARRAY;
+	}
 
-  if (type->isPointerType()) {
-    return Reflection::FIELD_TYPE_PTR;
-  }
+	if (type->isPointerType()) {
+		return Reflection::FIELD_TYPE_PTR;
+	}
 
-  if (type->isEnumeralType()) {
-    return Reflection::FIELD_TYPE_ENUM;
-  }
+	if (type->isEnumeralType()) {
+		return Reflection::FIELD_TYPE_ENUM;
+	}
 
-  if (type->isFunctionType()) {
-    return Reflection::FIELD_TYPE_FUNCTION;
-  }
+	if (type->isFunctionType()) {
+		return Reflection::FIELD_TYPE_FUNCTION;
+	}
 
-  // TODO: Test for primitive types
+	// TODO: Test for primitive types
 
-  return Reflection::FIELD_TYPE_PRIMITIVE;
+	return Reflection::FIELD_TYPE_PRIMITIVE;
 }
 
 // For arrays and pointers
 
 static int64_t findRecord(int64_t ID, std::string filename,
-                          const struct Reflection::context &ctx) {
-  for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
-    if (ctx.typeinfo[i].ID == ID && ctx.typeinfo[i].fileName == filename)
-      return i;
-  }
+													const struct Reflection::context &ctx) {
+	for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
+		if (ctx.typeinfo[i].ID == ID && ctx.typeinfo[i].fileName == filename)
+			return i;
+	}
 
-  return -1;
+	return -1;
 }
 
 void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
-                                 clang::RecordDecl *p, int64_t offset) {
-  if (fd->getParent()->isAnonymousStructOrUnion() && p == nullptr) {
-    return;
-  }
+																 clang::RecordDecl *p, int64_t offset) {
+	if (fd->getParent()->isAnonymousStructOrUnion() && p == nullptr) {
+		return;
+	}
 
-  clang::RecordDecl *parent = !p ? fd->getParent() : p;
-  if (parent->isInvalidDecl()) return;
+	clang::RecordDecl *parent = !p ? fd->getParent() : p;
+	if (parent->isInvalidDecl()) {
+		return;
+	}
+	if (fd->isInvalidDecl()) {
+		return;
+	}
 
-  const clang::ASTRecordLayout &layout =
-      ctx.context->getASTRecordLayout(parent);
+	const clang::ASTRecordLayout &layout =
+		ctx.context->getASTRecordLayout(parent);
 
-  struct Reflection::field f;
-  f.name = fd->getNameAsString();
-  f.offset =
-      (offset == -1 ? layout.getFieldOffset(fd->getFieldIndex()) : offset);
-  f.type.type = Reflection::NONE;
+	struct Reflection::field f;
+	f.name = fd->getNameAsString();
+	f.offset =
+		(offset == -1 ? layout.getFieldOffset(fd->getFieldIndex()) : offset);
+	f.type.type = Reflection::NONE;
 
-  clang::QualType fieldType = fd->getType();
+	clang::QualType fieldType = fd->getType();
 
-  enum Reflection::types typeEnum = getFieldType(fd, fieldType);
+	enum Reflection::types typeEnum = getFieldType(fd, fieldType);
 
-  // Experimentation
-  // if (fieldType->isArrayType() && fieldType->isConstantArrayType())
-  //   printf("array size: %ld\n",
-  //          clang::dyn_cast<clang::ConstantArrayType>(fieldType.getTypePtr())
-  //              ->getSize()
-  //              .getSExtValue());
-  // else if (fieldType->isArrayType())
-  //   printf("Not constant array type: %s\tparent: %s\tfilename: %s\n",
-  //          fd->getNameAsString().c_str(), parent->getNameAsString().c_str(),
-  //          ctx.filename);
+	// Experimentation
+	// if (fieldType->isArrayType() && fieldType->isConstantArrayType())
+	//   printf("array size: %ld\n",
+	//          clang::dyn_cast<clang::ConstantArrayType>(fieldType.getTypePtr())
+	//              ->getSize()
+	//              .getSExtValue());
+	// else if (fieldType->isArrayType())
+	//   printf("Not constant array type: %s\tparent: %s\tfilename: %s\n",
+	//          fd->getNameAsString().c_str(), parent->getNameAsString().c_str(),
+	//          ctx.filename);
 
-  if (typeEnum == Reflection::FIELD_TYPE_BITFIELD) {
-    f.type = Reflection::constructBitFieldSpec(fd, ctx.context);
-  }
+	if (typeEnum == Reflection::FIELD_TYPE_BITFIELD) {
+		f.type = Reflection::constructBitFieldSpec(fd, ctx.context);
+	}
 
-  else if (typeEnum == Reflection::FIELD_TYPE_RECORD) {
-    f.type = Reflection::constructRecordSpec(fieldType->getAsRecordDecl(),
-                                             ctx.filename);
-  }
+	else if (typeEnum == Reflection::FIELD_TYPE_RECORD) {
+		f.type = Reflection::constructRecordSpec(fieldType->getAsRecordDecl(),
+																						 ctx.filename);
+	}
 
-  else if (typeEnum == Reflection::FIELD_TYPE_PTR) {
-    f.type = Reflection::constructPtrSpec(
-        clang::dyn_cast<clang::PointerType>(fieldType.getTypePtr()), ctx);
-  }
+	else if (typeEnum == Reflection::FIELD_TYPE_PTR) {
+		printf("Ptr type field name: %s\n", fd->getNameAsString().c_str());
+		f.type = Reflection::constructPtrSpec(
+			clang::dyn_cast<clang::PointerType>(fieldType.getTypePtr()), ctx);
+	}
 
-  int64_t typeIndex = findRecord(parent->getID(), ctx.filename, ctx);
-  if (typeIndex < 0) {
-    fprintf(stderr, "Fatal: Failed to find type: %ld\t%s\t%s\n",
-            parent->getID(), parent->getNameAsString().c_str(), ctx.filename);
-    exit(EXIT_FAILURE);
-  }
+	int64_t typeIndex = findRecord(parent->getID(), ctx.filename, ctx);
+	if (typeIndex < 0) {
+		fprintf(stderr, "Fatal: Failed to find type: %ld\t%s\t%s\n",
+						parent->getID(), parent->getNameAsString().c_str(), ctx.filename);
+		exit(EXIT_FAILURE);
+	}
 
-  ctx.typeinfo[typeIndex].fields.emplace_back(f);
+	ctx.typeinfo[typeIndex].fields.emplace_back(f);
 
-  // clang::Decl *declForField =
-  // clang::dyn_cast<clang::Decl>(fd->getUnderlyingDecl());
+	// clang::Decl *declForField =
+	// clang::dyn_cast<clang::Decl>(fd->getUnderlyingDecl());
 }
