@@ -1,4 +1,5 @@
 #include "constructSpec.hpp"
+#include <clang/AST/Type.h>
 
 #include <stdio.h>
 
@@ -104,10 +105,26 @@ Reflection::constructPtrSpec(const clang::PointerType *type,
 }
 
 struct Reflection::typeSpecifier
-Reflection::constructPrimitiveSpec(clang::QualType) {
+Reflection::constructPrimitiveSpec(clang::QualType type) {
   struct Reflection::typeSpecifier spec;
 
-  // TODO: Implement this, you lazy procrastinating fuck
+  if (!type->isAnyComplexType()) {
+    spec.type = (enum Reflection::types)clang::dyn_cast<clang::BuiltinType>(
+                  type.getTypePtr())
+                  ->getKind();
+  }
+
+  else {
+    const clang::ComplexType *ct =
+      clang::dyn_cast<clang::ComplexType>(type.getTypePtr());
+
+    enum Reflection::types typeEnum =
+      (enum Reflection::types)clang::dyn_cast<clang::BuiltinType>(
+        ct->getElementType().getTypePtr())
+        ->getKind();
+
+    spec.type = (enum Reflection::types)REF_MAKE_COMPLEX(typeEnum);
+  }
 
   return spec;
 }

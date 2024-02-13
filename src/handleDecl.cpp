@@ -134,8 +134,6 @@ static enum Reflection::types getFieldType(clang::FieldDecl *fd,
     return Reflection::FIELD_TYPE_FUNCTION;
   }
 
-  // TODO: Test for primitive types
-
   return Reflection::FIELD_TYPE_PRIMITIVE;
 }
 
@@ -199,9 +197,12 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
   }
 
   else if (typeEnum == Reflection::FIELD_TYPE_PTR) {
-    printf("Ptr type field name: %s\n", fd->getNameAsString().c_str());
     f.type = Reflection::constructPtrSpec(
       clang::dyn_cast<clang::PointerType>(fieldType.getTypePtr()), ctx);
+  }
+
+  else if (typeEnum == Reflection::FIELD_TYPE_PRIMITIVE) {
+    f.type = Reflection::constructPrimitiveSpec(fieldType);
   }
 
   int64_t typeIndex = findRecord(parent->getID(), ctx.filename, ctx);

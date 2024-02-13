@@ -49,7 +49,6 @@ class MyASTConsumer : public clang::ASTConsumer {
     m_ctx.context = &Context;
 
     if (Visitor.TraverseDecl(m_ctx.context->getTranslationUnitDecl())) {
-      printf("Done!\n");
     }
   }
 };
