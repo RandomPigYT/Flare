@@ -134,7 +134,13 @@ static enum Reflection::types getFieldType(clang::FieldDecl *fd,
     return Reflection::FIELD_TYPE_FUNCTION;
   }
 
-  return Reflection::FIELD_TYPE_PRIMITIVE;
+  if (type->isBuiltinType() || type->isAnyComplexType() ||
+      type->isVectorType()) {
+    return Reflection::FIELD_TYPE_PRIMITIVE;
+  }
+
+  //return Reflection::FIELD_TYPE_PRIMITIVE;
+  return Reflection::NONE;
 }
 
 // For arrays and pointers
@@ -162,6 +168,8 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
   if (fd->isInvalidDecl()) {
     return;
   }
+
+  //printf("%s\n", fd->getNameAsString().c_str());
 
   const clang::ASTRecordLayout &layout =
     ctx.context->getASTRecordLayout(parent);
@@ -196,6 +204,12 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
                                              ctx.filename);
   }
 
+  else if (typeEnum == Reflection::FIELD_TYPE_ENUM) {
+    clang::EnumDecl *ed =
+      clang::dyn_cast<clang::EnumDecl>(fieldType->getAsTagDecl());
+    f.type = Reflection::constructEnumSpec(ed, ctx.filename);
+  }
+
   else if (typeEnum == Reflection::FIELD_TYPE_PTR) {
     f.type = Reflection::constructPtrSpec(
       clang::dyn_cast<clang::PointerType>(fieldType.getTypePtr()), ctx);
@@ -203,6 +217,9 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
 
   else if (typeEnum == Reflection::FIELD_TYPE_PRIMITIVE) {
     f.type = Reflection::constructPrimitiveSpec(fieldType);
+  }
+
+  else if (typeEnum == Reflection::FIELD_TYPE_ARRAY) {
   }
 
   int64_t typeIndex = findRecord(parent->getID(), ctx.filename, ctx);

@@ -17,4 +17,5 @@ struct hi {
   complex double m;
   complex long double n;
   complex int o;
+  void *p;
 };

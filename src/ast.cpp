@@ -26,6 +26,10 @@ private:
 }
 
 bool Reflection::ASTDeclVisitor::TraverseDecl(clang::Decl *D) {
+  if (clang::dyn_cast<clang::TypedefDecl>(D)) {
+    //printf("%s\n", m_ctx.filename);
+  }
+
   if (clang::RecordDecl *rd = clang::dyn_cast<clang::RecordDecl>(D)) {
     Reflection::handleRecordDecl(rd, m_ctx);
   }

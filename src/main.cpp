@@ -53,7 +53,8 @@ int main(int argc, char **argv) {
     std::cout << "\t";
     for (auto j : i.fields) {
       std::cout << "Name: " << (j.name.length() ? j.name : "(Unnamed)") << "\t"
-                << "Type: " << j.type.type << "\n\t";
+                << "Type: " << (j.type.type & (0xffffffff ^ (1 << 31))) << "\t"
+                << ((j.type.type & (1 << 31)) ? "complex" : "") << "\n\t";
     }
     std::cout << std::endl;
   }
