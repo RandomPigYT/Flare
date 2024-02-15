@@ -26,7 +26,9 @@ struct Reflection::typeSpecifier
 constructArraySpec(const clang::ArrayType *type,
                    const struct Reflection::context &ctx);
 
-struct Reflection::typeSpecifier constructFunctionSpec();
+struct Reflection::typeSpecifier
+constructFunctionSpec(const clang::FunctionType *type,
+                      const struct Reflection::context &ctx);
 
 struct Reflection::typeSpecifier constructPrimitiveSpec(clang::QualType type);
 

@@ -1,7 +1,7 @@
 CC:=g++
 LD:=g++
 
-CFLAGS := -Wall -Wextra -O0 -g -std=c++20 -pedantic $(shell llvm-config --cxxflags) -Wno-unused-label -I.
+CFLAGS := -Wall -Wextra -O0 -g -std=gnu++17 -pedantic $(shell llvm-config --cppflags) -Wno-unused-label -I.
 LDFLAGS := $(shell llvm-config --ldflags) -lncurses -lclang-cpp
 LDFLAGS += $(shell llvm-config --libs)
 

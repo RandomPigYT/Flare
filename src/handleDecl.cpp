@@ -22,14 +22,14 @@ void Reflection::handleRecordDecl(clang::RecordDecl *rd, struct context &ctx) {
   t.ID = rd->getID();
   t.fileName.assign(ctx.filename);
   t.name = rd->getNameAsString();
-  if (t.name.length()) {
+  if (t.name.size()) {
     t.name = (rd->isStruct() ? "struct " : "union ") + t.name;
   }
 
   t.recordType = rd->isStruct() ? Reflection::RECORD_TYPE_STRUCT
                                 : Reflection::RECORD_TYPE_UNION;
 
-  ctx.typeinfo.emplace_back(t);
+  ctx.typeinfo.push_back(t);
 }
 
 void Reflection::handleEnumDecl(clang::EnumDecl *ed, struct context &ctx) {
@@ -38,11 +38,11 @@ void Reflection::handleEnumDecl(clang::EnumDecl *ed, struct context &ctx) {
   e.ID = ed->getID();
   e.fileName.assign(ctx.filename);
   e.name = ed->getNameAsString();
-  if (e.name.length()) {
+  if (e.name.size()) {
     e.name = "enum " + e.name;
   }
 
-  ctx.enumInfo.emplace_back(e);
+  ctx.enumInfo.push_back(e);
 }
 
 static int64_t findEnum(int64_t ID, std::string filename,
@@ -71,7 +71,7 @@ void Reflection::handleEnumConstantDecl(clang::EnumConstantDecl *ecd,
     exit(EXIT_FAILURE);
   }
 
-  ctx.enumInfo[enumIndex].constants.emplace_back(ec);
+  ctx.enumInfo[enumIndex].constants.push_back(ec);
 }
 
 void Reflection::handleTypedefDecl(clang::TypedefDecl *td,
@@ -88,7 +88,7 @@ EnumType:
         ctx.enumInfo[i].ID != td->getUnderlyingDecl()->getID()) {
       continue;
     }
-    ctx.enumInfo[i].aliases.emplace_back(td->getNameAsString());
+    ctx.enumInfo[i].aliases.push_back(td->getNameAsString());
   }
 
   return;
@@ -104,7 +104,7 @@ RecordType:
       continue;
     }
 
-    ctx.typeinfo[i].aliases.emplace_back(td->getNameAsString());
+    ctx.typeinfo[i].aliases.push_back(td->getNameAsString());
   }
 }
 
@@ -220,6 +220,13 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
   }
 
   else if (typeEnum == Reflection::FIELD_TYPE_ARRAY) {
+    f.type = Reflection::constructArraySpec(
+      clang::dyn_cast<clang::ArrayType>(fieldType.getTypePtr()), ctx);
+  }
+
+  else if (typeEnum == Reflection::FIELD_TYPE_FUNCTION) {
+    f.type = Reflection::constructFunctionSpec(
+      clang::dyn_cast<clang::FunctionType>(fieldType.getTypePtr()), ctx);
   }
 
   int64_t typeIndex = findRecord(parent->getID(), ctx.filename, ctx);
@@ -229,7 +236,7 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
     exit(EXIT_FAILURE);
   }
 
-  ctx.typeinfo[typeIndex].fields.emplace_back(f);
+  ctx.typeinfo[typeIndex].fields.push_back(f);
 
   // clang::Decl *declForField =
   // clang::dyn_cast<clang::Decl>(fd->getUnderlyingDecl());

@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
   ctx.filename = nullptr;
 
   for (int i = 0; i < argc; i++) {
-    ctx.args.emplace_back(argv[i]);
+    ctx.args.push_back(argv[i]);
   }
 
   llvm::Expected<clang::tooling::CommonOptionsParser> optionsParser =
@@ -75,22 +75,20 @@ int main(int argc, char **argv) {
     std::cout << std::endl;
   }
 
-  // for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
-  //   for (uint64_t j = 0; j < ctx.typeinfo[i].fields.size(); j++) {
-  //     if (ctx.typeinfo[i].fields[j].type.type ==
-  //     Reflection::FIELD_TYPE_STRUCT)
-  //       free(((struct Reflection::recordRef_t *)ctx.typeinfo[i]
-  //                 .fields[j]
-  //                 .type.info)
-  //                ->fileName);
+  for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
+    for (uint64_t j = 0; j < ctx.typeinfo[i].fields.size(); j++) {
+      if (ctx.typeinfo[i].fields[j].type.type == Reflection::FIELD_TYPE_STRUCT)
+        free(
+          ((struct Reflection::recordRef *)ctx.typeinfo[i].fields[j].type.info)
+            ->fileName);
 
-  //    if (ctx.typeinfo[i].fields[j].type.type ==
-  //            Reflection::FIELD_TYPE_STRUCT ||
-  //        ctx.typeinfo[i].fields[j].type.type ==
-  //            Reflection::FIELD_TYPE_BITFIELD)
-  //      free(ctx.typeinfo[i].fields[j].type.info);
-  //  }
-  //}
+      if (ctx.typeinfo[i].fields[j].type.type ==
+            Reflection::FIELD_TYPE_STRUCT ||
+          ctx.typeinfo[i].fields[j].type.type ==
+            Reflection::FIELD_TYPE_BITFIELD)
+        free(ctx.typeinfo[i].fields[j].type.info);
+    }
+  }
 
   return 0;
 }

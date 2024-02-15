@@ -1,4 +1,5 @@
 #include "constructSpec.hpp"
+#include "typeinfo.hpp"
 #include <clang/AST/Decl.h>
 #include <clang/AST/Type.h>
 
@@ -109,6 +110,47 @@ static enum Reflection::types getPointeeType(clang::QualType type) {
   return Reflection::NONE;
 }
 
+static Reflection::typeSpecifier
+constructSpec(clang::QualType type, const struct Reflection::context &ctx) {
+  enum Reflection::types typeEnum = getPointeeType(type);
+
+  if (typeEnum == Reflection::FIELD_TYPE_RECORD) {
+    clang::RecordDecl *rd = type->getAsRecordDecl();
+    return Reflection::constructRecordSpec(rd, ctx.filename);
+  }
+
+  else if (typeEnum == Reflection::FIELD_TYPE_ENUM) {
+    clang::EnumDecl *ed =
+      clang::dyn_cast<clang::EnumDecl>(type->getAsTagDecl());
+    return Reflection::constructEnumSpec(ed, ctx.filename);
+  }
+
+  else if (typeEnum == Reflection::FIELD_TYPE_PTR) {
+    return Reflection::constructPtrSpec(
+      clang::dyn_cast<clang::PointerType>(type.getTypePtr()), ctx);
+  }
+
+  else if (typeEnum == Reflection::FIELD_TYPE_ARRAY) {
+    return Reflection::constructArraySpec(
+      clang::dyn_cast<clang::ArrayType>(type.getTypePtr()), ctx);
+  }
+
+  else if (typeEnum == Reflection::FIELD_TYPE_FUNCTION) {
+    return Reflection::constructFunctionSpec(
+      clang::dyn_cast<clang::FunctionType>(type.getTypePtr()), ctx);
+  }
+
+  else if (typeEnum == Reflection::FIELD_TYPE_PRIMITIVE) {
+    return Reflection::constructPrimitiveSpec(type);
+  }
+
+  // Just to cover all return paths
+  struct Reflection::typeSpecifier t;
+  t.type = Reflection::NONE;
+  t.info = nullptr;
+  return t;
+}
+
 static void setPtrRef(struct Reflection::ptrRef *p,
                       const clang::PointerType *type,
                       const struct Reflection::context &ctx) {
@@ -121,22 +163,7 @@ static void setPtrRef(struct Reflection::ptrRef *p,
 
   p->level = level;
 
-  enum Reflection::types typeEnum = getPointeeType(temp);
-
-  if (typeEnum == Reflection::FIELD_TYPE_RECORD) {
-    clang::RecordDecl *rd = temp->getAsRecordDecl();
-    p->type = Reflection::constructRecordSpec(rd, ctx.filename);
-  }
-
-  else if (typeEnum == Reflection::FIELD_TYPE_PRIMITIVE) {
-    p->type = Reflection::constructPrimitiveSpec(temp);
-  }
-
-  else if (typeEnum == Reflection::FIELD_TYPE_ENUM) {
-    clang::EnumDecl *ed =
-      clang::dyn_cast<clang::EnumDecl>(temp->getAsTagDecl());
-    p->type = Reflection::constructEnumSpec(ed, ctx.filename);
-  }
+  p->type = constructSpec(temp, ctx);
 }
 
 struct Reflection::typeSpecifier
@@ -167,27 +194,7 @@ static void setArrayRef(struct Reflection::arrayRef *a,
   }
 
   clang::QualType temp = type->getElementType();
-  enum Reflection::types typeEnum = getPointeeType(temp);
-
-  if (typeEnum == Reflection::FIELD_TYPE_RECORD) {
-    clang::RecordDecl *rd = temp->getAsRecordDecl();
-    a->type = Reflection::constructRecordSpec(rd, ctx.filename);
-  }
-
-  else if (typeEnum == Reflection::FIELD_TYPE_ENUM) {
-    clang::EnumDecl *ed =
-      clang::dyn_cast<clang::EnumDecl>(temp->getAsTagDecl());
-    a->type = Reflection::constructEnumSpec(ed, ctx.filename);
-  }
-
-  else if (typeEnum == Reflection::FIELD_TYPE_PTR) {
-    a->type = Reflection::constructPtrSpec(
-      clang::dyn_cast<clang::PointerType>(temp.getTypePtr()), ctx);
-  }
-
-  else if (typeEnum == Reflection::FIELD_TYPE_PRIMITIVE) {
-    a->type = Reflection::constructPrimitiveSpec(temp);
-  }
+  a->type = constructSpec(temp, ctx);
 }
 
 struct Reflection::typeSpecifier
@@ -201,6 +208,39 @@ Reflection::constructArraySpec(const clang::ArrayType *type,
   struct Reflection::arrayRef *temp = (struct Reflection::arrayRef *)spec.info;
 
   setArrayRef(temp, type, ctx);
+
+  return spec;
+}
+
+static void setFunctionRef(struct Reflection::functionRef *f,
+                           const clang::FunctionType *type,
+                           const struct Reflection::context &ctx) {
+  f->returnType = constructSpec(type->getReturnType(), ctx);
+
+  //const clang::FunctionProtoType *ft = type->getAs<clang::FunctionProtoType>();
+  //for (clang::QualType param : ft->getParamTypes()) {
+  //  auto temp = constructSpec(param, ctx);
+  //  f->parameters.emplace_back(temp);
+  //}
+
+  //if (ft->isVariadic()) {
+  //  struct Reflection::typeSpecifier variadicSpec;
+  //  variadicSpec.type = Reflection::FIELD_TYPE_VA_ARG;
+  //  variadicSpec.info = nullptr;
+  //  f->parameters.emplace_back(variadicSpec);
+  //}
+}
+
+struct Reflection::typeSpecifier
+Reflection::constructFunctionSpec(const clang::FunctionType *type,
+                                  const struct Reflection::context &ctx) {
+  struct Reflection::typeSpecifier spec;
+  spec.type = Reflection::FIELD_TYPE_FUNCTION;
+  spec.info = malloc(sizeof(struct Reflection::functionRef));
+
+  struct Reflection::functionRef *temp =
+    (struct Reflection::functionRef *)spec.info;
+  setFunctionRef(temp, type, ctx);
 
   return spec;
 }

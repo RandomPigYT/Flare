@@ -2,6 +2,7 @@
 #define REFLECTION_CONTEXT_H
 
 #include "typeinfo.hpp"
+#include "util/vector.hpp"
 #include <clang/AST/ASTConsumer.h>
 
 namespace Reflection {
@@ -13,6 +14,7 @@ struct context {
   typeInfoVec typeinfo;
   enumInfoVec enumInfo;
   std::vector<const char *> args;
+  //util::Vector<const char *> args;
   char *filename;
 
   clang::ASTContext *context;
