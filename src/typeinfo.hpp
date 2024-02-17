@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "util/vector.hpp"
-
 namespace Reflection {
 #define REF_COMPLEX_MASK 1 << 31
 
@@ -68,15 +66,9 @@ enum recordTypes {
 struct typeSpecifier {
   enum types type;
 
-  // Only points to a valid block of memeory if type is not primitive
+  // Only points to a valid block of memeory if type is not primitive or if type is a function type
   // Points to a functionRef_t, ptrRef_t, or structRef_t
   void *info;
-};
-
-struct functionRef {
-  std::vector<struct typeSpecifier> parameters;
-  //util::Vector<struct typeSpecifier> parameters;
-  struct typeSpecifier returnType;
 };
 
 struct recordRef {
@@ -123,12 +115,10 @@ struct typeInfo {
   // Can be empty
   std::string name;
   std::vector<std::string> aliases;
-  //util::Vector<std::string> aliases;
 
   enum recordTypes recordType;
 
   std::vector<struct field> fields;
-  //util::Vector<struct field> fields;
 };
 
 struct enumInfo {
@@ -137,10 +127,8 @@ struct enumInfo {
 
   std::string name;
   std::vector<std::string> aliases;
-  //util::Vector<std::string> aliases;
 
   std::vector<struct enumConstant> constants;
-  //util::Vector<struct enumConstant> constants;
 };
 
 } // namespace Reflection

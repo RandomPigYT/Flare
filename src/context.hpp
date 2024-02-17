@@ -2,7 +2,6 @@
 #define REFLECTION_CONTEXT_H
 
 #include "typeinfo.hpp"
-#include "util/vector.hpp"
 #include <clang/AST/ASTConsumer.h>
 
 namespace Reflection {

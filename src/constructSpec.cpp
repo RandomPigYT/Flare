@@ -38,7 +38,6 @@ Reflection::constructBitFieldSpec(clang::FieldDecl *fd,
                                   const clang::ASTContext *context) {
   struct Reflection::typeSpecifier spec;
   spec.type = Reflection::FIELD_TYPE_BITFIELD;
-
   spec.info = malloc(sizeof(struct Reflection::bitFieldRef));
 
   struct Reflection::bitFieldRef *temp =
@@ -81,66 +80,36 @@ Reflection::constructPrimitiveSpec(clang::QualType type) {
   return spec;
 }
 
-static enum Reflection::types getPointeeType(clang::QualType type) {
-  if (type->isRecordType()) {
-    return Reflection::FIELD_TYPE_RECORD;
-  }
-
-  if (type->isPointerType()) {
-    return Reflection::FIELD_TYPE_PTR;
-  }
-
-  if (type->isArrayType()) {
-    return Reflection::FIELD_TYPE_ARRAY;
-  }
-
-  if (type->isEnumeralType()) {
-    return Reflection::FIELD_TYPE_ENUM;
-  }
-
-  if (type->isFunctionType()) {
-    return Reflection::FIELD_TYPE_FUNCTION;
-  }
-
-  if (type->isBuiltinType() || type->isAnyComplexType() ||
-      type->isVectorType()) {
-    return Reflection::FIELD_TYPE_PRIMITIVE;
-  }
-
-  return Reflection::NONE;
-}
-
 static Reflection::typeSpecifier
 constructSpec(clang::QualType type, const struct Reflection::context &ctx) {
-  enum Reflection::types typeEnum = getPointeeType(type);
-
-  if (typeEnum == Reflection::FIELD_TYPE_RECORD) {
+  if (type->isRecordType()) {
     clang::RecordDecl *rd = type->getAsRecordDecl();
     return Reflection::constructRecordSpec(rd, ctx.filename);
   }
 
-  else if (typeEnum == Reflection::FIELD_TYPE_ENUM) {
+  else if (type->isEnumeralType()) {
     clang::EnumDecl *ed =
       clang::dyn_cast<clang::EnumDecl>(type->getAsTagDecl());
     return Reflection::constructEnumSpec(ed, ctx.filename);
   }
 
-  else if (typeEnum == Reflection::FIELD_TYPE_PTR) {
+  else if (type->isPointerType()) {
     return Reflection::constructPtrSpec(
       clang::dyn_cast<clang::PointerType>(type.getTypePtr()), ctx);
   }
 
-  else if (typeEnum == Reflection::FIELD_TYPE_ARRAY) {
+  else if (type->isArrayType()) {
     return Reflection::constructArraySpec(
       clang::dyn_cast<clang::ArrayType>(type.getTypePtr()), ctx);
   }
 
-  else if (typeEnum == Reflection::FIELD_TYPE_FUNCTION) {
+  else if (type->isFunctionType()) {
     return Reflection::constructFunctionSpec(
       clang::dyn_cast<clang::FunctionType>(type.getTypePtr()), ctx);
   }
 
-  else if (typeEnum == Reflection::FIELD_TYPE_PRIMITIVE) {
+  else if (type->isBuiltinType() || type->isAnyComplexType() ||
+           type->isVectorType()) {
     return Reflection::constructPrimitiveSpec(type);
   }
 
@@ -212,35 +181,11 @@ Reflection::constructArraySpec(const clang::ArrayType *type,
   return spec;
 }
 
-static void setFunctionRef(struct Reflection::functionRef *f,
-                           const clang::FunctionType *type,
-                           const struct Reflection::context &ctx) {
-  f->returnType = constructSpec(type->getReturnType(), ctx);
-
-  //const clang::FunctionProtoType *ft = type->getAs<clang::FunctionProtoType>();
-  //for (clang::QualType param : ft->getParamTypes()) {
-  //  auto temp = constructSpec(param, ctx);
-  //  f->parameters.emplace_back(temp);
-  //}
-
-  //if (ft->isVariadic()) {
-  //  struct Reflection::typeSpecifier variadicSpec;
-  //  variadicSpec.type = Reflection::FIELD_TYPE_VA_ARG;
-  //  variadicSpec.info = nullptr;
-  //  f->parameters.emplace_back(variadicSpec);
-  //}
-}
-
 struct Reflection::typeSpecifier
-Reflection::constructFunctionSpec(const clang::FunctionType *type,
-                                  const struct Reflection::context &ctx) {
+Reflection::constructFunctionSpec(const clang::FunctionType *,
+                                  const struct Reflection::context &) {
   struct Reflection::typeSpecifier spec;
   spec.type = Reflection::FIELD_TYPE_FUNCTION;
-  spec.info = malloc(sizeof(struct Reflection::functionRef));
-
-  struct Reflection::functionRef *temp =
-    (struct Reflection::functionRef *)spec.info;
-  setFunctionRef(temp, type, ctx);
 
   return spec;
 }
