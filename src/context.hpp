@@ -3,6 +3,7 @@
 
 #include "typeinfo.hpp"
 #include <clang/AST/ASTConsumer.h>
+#include <string>
 
 namespace Reflection {
 
@@ -13,10 +14,11 @@ struct context {
   typeInfoVec typeinfo;
   enumInfoVec enumInfo;
   std::vector<const char *> args;
-  //util::Vector<const char *> args;
   char *filename;
 
   clang::ASTContext *context;
+  std::string outFile;
+  std::string reflectionHeader;
 };
 
 }

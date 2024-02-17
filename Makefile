@@ -66,3 +66,6 @@ valgrind: dirs $(TARGET)
 format: $(SRCS) $(INCLUDES)
 	@clang-format $(SRCS) $(INCLUDES) --style=file:/home/randompigyt/.clang_frmt/.clang-format -i
 	@echo Formatted: $(SRCS) $(INCLUDES)
+
+test:
+	./$(TARGET) testFiles/anon.c testFiles/kind.c --opts --out "src/emitted/out.c" --header "include/reflection.h"

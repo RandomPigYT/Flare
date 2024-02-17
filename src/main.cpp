@@ -8,11 +8,59 @@
 
 #include <iostream>
 #include <string>
+#include <filesystem>
 
 #include "ast.hpp"
 #include "handleDecl.hpp"
 #include "typeinfo.hpp"
 #include "context.hpp"
+#include "emit.hpp"
+
+#define START_OPTIONS "--opts"
+#define OUT_FILE "--out"
+#define REFLECTION_HEADER "--header"
+
+bool parseArgs(struct Reflection::context &ctx, uint64_t *optionStart) {
+  std::vector<const char *> &args = ctx.args;
+
+  bool reachedOptions = false;
+  bool gotOutFile = false;
+  bool gotIncludeFile = false;
+
+  for (uint64_t i = 0; i < args.size(); i++) {
+    if (std::string(args[i]) == START_OPTIONS) {
+      reachedOptions = true;
+      *optionStart = i;
+      continue;
+    }
+
+    if (!reachedOptions) {
+      continue;
+    }
+
+    std::string temp(args[i]);
+
+    if (temp == OUT_FILE) {
+      if (i == args.size() - 1) {
+        return false;
+      }
+      ctx.outFile = std::string(args[i + 1]);
+      gotOutFile = true;
+      i++;
+    }
+
+    if (temp == REFLECTION_HEADER) {
+      if (i == args.size() - 1) {
+        return false;
+      }
+      ctx.reflectionHeader = std::string(args[i + 1]);
+      gotIncludeFile = true;
+      i++;
+    }
+  }
+
+  return (gotOutFile && gotIncludeFile);
+}
 
 int main(int argc, char **argv) {
   if (argc <= 1) {
@@ -29,8 +77,20 @@ int main(int argc, char **argv) {
     ctx.args.push_back(argv[i]);
   }
 
+  uint64_t optionsStart;
+  if (parseArgs(ctx, &optionsStart)) {
+    printf("Out file: %s\nReflection header: %s\n", ctx.outFile.c_str(),
+           ctx.reflectionHeader.c_str());
+  }
+
+  else {
+    fprintf(stderr, "Bad usage\n");
+    return EXIT_FAILURE;
+  }
+
+  int numArgs = optionsStart;
   llvm::Expected<clang::tooling::CommonOptionsParser> optionsParser =
-    clang::tooling::CommonOptionsParser::create(argc, (const char **)argv,
+    clang::tooling::CommonOptionsParser::create(numArgs, (const char **)argv,
                                                 catagory);
 
   clang::tooling::ClangTool tool(optionsParser->getCompilations(),
@@ -90,5 +150,6 @@ int main(int argc, char **argv) {
     }
   }
 
+  Reflection::emit(ctx);
   return 0;
 }
