@@ -19,6 +19,8 @@ struct context {
   clang::ASTContext *context;
   std::string outFile;
   std::string reflectionHeader;
+
+  uint64_t globalID;
 };
 
 }

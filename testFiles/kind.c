@@ -6,10 +6,12 @@ struct hi {
   int16_t b;
   int32_t c;
   int64_t d;
+  long long q;
   uint8_t e;
   uint16_t f;
   uint32_t g;
   uint64_t h;
+  unsigned long long r;
   float i;
   double j;
   long double k;

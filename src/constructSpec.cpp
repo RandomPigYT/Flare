@@ -60,6 +60,9 @@ Reflection::constructPrimitiveSpec(clang::QualType type) {
   }
 
   else if (!type->isAnyComplexType()) {
+    clang::BuiltinType::Kind temp =
+      clang::dyn_cast<clang::BuiltinType>(type.getTypePtr())->getKind();
+
     spec.type = (enum Reflection::types)clang::dyn_cast<clang::BuiltinType>(
                   type.getTypePtr())
                   ->getKind();
