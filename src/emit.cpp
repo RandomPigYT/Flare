@@ -7,6 +7,24 @@
 #include <limits.h>
 #include <filesystem>
 
+#define ASSIGN_VAL(fileContents, dst, src) \
+  fileContents += dst + " = " + src + ";\n\t";
+
+#define ALLOC_MEM(fileContents, dst, n, pointeeType)                         \
+  {                                                                          \
+    ASSIGN_VAL(fileContents, dst,                                            \
+               "malloc(" + std::to_string(n) + " * sizeof(" + #pointeeType + \
+                 "))");                                                      \
+  }
+
+#define ASSIGN_STR(fileContents, dst, src)                       \
+  {                                                              \
+    ALLOC_MEM(fileContents, dst, src.length() + 1, char);        \
+    fileContents += "strcpy(" + dst + ", \"" + src + "\");\n\t"; \
+  }
+
+#define GET_FIELD(container, field) container + "." + #field
+
 static std::string getRelativePath(std::string from, std::string to) {
   char currentDir[PATH_MAX];
 
@@ -31,30 +49,55 @@ static void writeAliases(std::string &fileContents,
                          const std::vector<std::string> &aliases) {
   for (uint64_t i = 0; i < aliases.size(); i++) {
     std::string currentAlias = aliasArray + "[" + std::to_string(i) + "]";
-    fileContents += currentAlias + " = malloc(" +
-                    std::to_string(aliases[i].length() + 1) + ");\n\t";
-    fileContents += "strcpy(" + currentAlias + ", \"" + aliases[i] + "\");\n\t";
+    ASSIGN_STR(fileContents, currentAlias, aliases[i]);
   }
 }
 
-static void writeTypeInfo(std::string &fileContents,
-                          const std::string &programInfoStruct,
-                          const struct Reflection::context &ctx) {
+static void writeTypeSpecifier(std::string &fileContents,
+                               const std::string &typeSpecifierName,
+                               const struct Reflection::typeSpecifier &spec) {
+  ASSIGN_VAL(fileContents, typeSpecifierName + ".type",
+             std::to_string(spec.type));
+}
+
+static void writeInfo(std::string &fileContents,
+                      const std::string &programInfoStruct,
+                      const struct Reflection::context &ctx) {
   for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
     std::string currentType =
       programInfoStruct + ".types[" + std::to_string(i) + "]";
 
-    fileContents +=
-      currentType + ".ID = " + std::to_string(ctx.typeinfo[i].ID) + ";\n\t";
-    fileContents +=
-      currentType + ".filename = \"" + ctx.typeinfo[i].fileName + "\";\n\t";
-    fileContents +=
-      currentType + ".name = \"" + ctx.typeinfo[i].name + "\";\n\t";
-    fileContents += currentType + ".aliases = malloc(" +
-                    std::to_string(ctx.typeinfo[i].aliases.size()) +
-                    " * sizeof(char *));\n\t";
+    ASSIGN_VAL(fileContents, currentType + ".ID",
+               std::to_string(ctx.typeinfo[i].ID));
+
+    ASSIGN_STR(fileContents, currentType + ".filename",
+               ctx.typeinfo[i].fileName);
+
+    ASSIGN_STR(fileContents, currentType + ".name", ctx.typeinfo[i].name);
+
+    ALLOC_MEM(fileContents, currentType + ".aliases",
+              ctx.typeinfo[i].aliases.size(), char *);
+
     std::string aliasArray = currentType + ".aliases";
     writeAliases(fileContents, aliasArray, ctx.typeinfo[i].aliases);
+
+    ASSIGN_VAL(fileContents, currentType + ".recordType",
+               std::to_string(ctx.typeinfo[i].recordType));
+
+    ALLOC_MEM(fileContents, currentType + ".fields",
+              ctx.typeinfo[i].fields.size(), struct flr_field);
+    for (uint64_t j = 0; j < ctx.typeinfo[i].fields.size(); j++) {
+      std::string currentField =
+        currentType + ".fields[" + std::to_string(j) + "]";
+
+      ASSIGN_STR(fileContents, currentField + ".name",
+                 ctx.typeinfo[i].fields[j].name);
+      ASSIGN_VAL(fileContents, currentField + ".offset",
+                 std::to_string(ctx.typeinfo[i].fields[j].offset));
+      writeTypeSpecifier(fileContents, currentField + ".type",
+                         ctx.typeinfo[i].fields[j].type);
+    }
+
     fileContents += "\n\t";
   }
 }
@@ -78,23 +121,24 @@ void Reflection::emit(const struct Reflection::context &ctx) {
   std::string programInfoStruct = "info";
 
   fileContents += "struct flr_programInfo " + programInfoStruct + ";\n\t";
-  fileContents += "if (!allocator) \n\t\tallocator = malloc;\n\n\t";
-  fileContents += programInfoStruct + ".types = malloc(" +
-                  std::to_string(ctx.typeinfo.size()) +
-                  " * sizeof(struct flr_typeInfo));\n\t";
-  fileContents += programInfoStruct +
-                  ".numTypes = " + std::to_string(ctx.typeinfo.size()) +
-                  ";\n\t";
 
   fileContents += "\n\t";
 
-  fileContents += programInfoStruct + ".enums = malloc(" +
-                  std::to_string(ctx.enumInfo.size()) +
-                  " * sizeof(struct flr_enumInfo));\n\t";
-  fileContents += programInfoStruct +
-                  ".numEnums = " + std::to_string(ctx.enumInfo.size()) +
-                  ";\n\n\t";
-  writeTypeInfo(fileContents, programInfoStruct, ctx);
+  ALLOC_MEM(fileContents, programInfoStruct + ".types", ctx.typeinfo.size(),
+            struct flr_typeInfo);
+  ASSIGN_VAL(fileContents, programInfoStruct + ".numTypes",
+             std::to_string(ctx.typeinfo.size()));
+
+  fileContents += "\n\t";
+
+  ALLOC_MEM(fileContents, programInfoStruct + ".enums", ctx.enumInfo.size(),
+            struct flr_enumInfo);
+  ASSIGN_VAL(fileContents, programInfoStruct + ".numEnums",
+             std::to_string(ctx.enumInfo.size()));
+
+  fileContents += "\n\t";
+
+  writeInfo(fileContents, programInfoStruct, ctx);
 
   fileContents += "return " + programInfoStruct + ";\n";
   fileContents += "}\n";

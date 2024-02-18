@@ -8,7 +8,10 @@ typedef struct {
   int a;
 } Hi;
 
-union Hello_u {};
+union Hello_u {
+  int uniono;
+  int amiinsamemem;
+};
 
 struct helloo {
   int a;
@@ -36,17 +39,5 @@ typedef struct bruh {
 } bruh;
 
 typedef bruh gae;
-
-typedef bruh ***boobies;
-
-#define testGen(x)           \
-  _Generic((x),              \
-    int: "Int",              \
-    hello: "Hello",          \
-    Hi: "Hi",                \
-    struct helloo: "Helloo", \
-    __typeof__(l): "GG",     \
-    default: "Whee")
-
-int main(void) {
-}
+typedef bruh YooHoo;
+typedef bruh fml;
