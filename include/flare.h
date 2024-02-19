@@ -119,10 +119,12 @@ struct flr_typeInfo {
 
   char *name;
   char **aliases;
+  uint64_t numAliases;
 
   enum flr_recordTypes recordType;
 
   struct flr_field *fields;
+  uint64_t numFields;
 };
 
 struct flr_enumInfo {
@@ -131,8 +133,10 @@ struct flr_enumInfo {
 
   char *name;
   char **aliases;
+  uint64_t numAliases;
 
   struct flr_enumConstant *constants;
+  uint64_t numConstants;
 };
 
 struct flr_programInfo {

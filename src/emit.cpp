@@ -7,23 +7,55 @@
 #include <limits.h>
 #include <filesystem>
 
-#define ASSIGN_VAL(fileContents, dst, src) \
-  fileContents += dst + " = " + src + ";\n\t";
+struct emittterStatus {
+  std::string fileContents;
+  uint32_t indentLevel;
 
-#define ALLOC_MEM(fileContents, dst, n, pointeeType)                         \
-  {                                                                          \
-    ASSIGN_VAL(fileContents, dst,                                            \
-               "malloc(" + std::to_string(n) + " * sizeof(" + #pointeeType + \
-                 "))");                                                      \
+  emittterStatus() {
+    fileContents = "";
+    indentLevel = 0;
   }
+};
 
-#define ASSIGN_STR(fileContents, dst, src)                       \
-  {                                                              \
-    ALLOC_MEM(fileContents, dst, src.length() + 1, char);        \
-    fileContents += "strcpy(" + dst + ", \"" + src + "\");\n\t"; \
+static void addIndent(struct emittterStatus &s) {
+  for (uint32_t i = 0; i < s.indentLevel; i++) {
+    s.fileContents += "\t";
   }
+}
 
-#define GET_FIELD(container, field) container + "." + #field
+static void addLine(struct emittterStatus &s) {
+  s.fileContents += "\n";
+}
+static void beginBlock(struct emittterStatus &s,
+                       const std::string &blockHeader = "",
+                       bool prependSpace = false, bool shouldAddIndent = true) {
+  if (shouldAddIndent)
+    addIndent(s);
+
+  s.fileContents += prependSpace ? " " : "";
+  s.fileContents +=
+    blockHeader + std::string(!blockHeader.length() ? "" : " ") + "{\n";
+  s.indentLevel++;
+}
+
+static void endBlock(struct emittterStatus &s, const std::string &end = ",") {
+  s.indentLevel--;
+  addIndent(s);
+  s.fileContents += "}" + end + "\n";
+}
+
+static void assignVal(struct emittterStatus &s, const std::string &dst,
+                      const std::string &src, const std::string &end = ",") {
+  addIndent(s);
+  s.fileContents += dst + " = " + src + end + "\n";
+}
+
+static void assignBlock(struct emittterStatus &s, const std::string &dst,
+                        const std::string &blockHeader = "") {
+  addIndent(s);
+  s.fileContents += dst + " =";
+  beginBlock(s, blockHeader, true, false);
+}
 
 static std::string getRelativePath(std::string from, std::string to) {
   char currentDir[PATH_MAX];
@@ -44,62 +76,46 @@ static std::string getRelativePath(std::string from, std::string to) {
   return relativePath;
 }
 
-static void writeAliases(std::string &fileContents,
-                         const std::string &aliasArray,
-                         const std::vector<std::string> &aliases) {
-  for (uint64_t i = 0; i < aliases.size(); i++) {
-    std::string currentAlias = aliasArray + "[" + std::to_string(i) + "]";
-    ASSIGN_STR(fileContents, currentAlias, aliases[i]);
-  }
+static void writeAliases(std::string &, const std::string &,
+                         const std::vector<std::string> &) {
 }
 
-static void writeTypeSpecifier(std::string &fileContents,
-                               const std::string &typeSpecifierName,
-                               const struct Reflection::typeSpecifier &spec) {
-  ASSIGN_VAL(fileContents, typeSpecifierName + ".type",
-             std::to_string(spec.type));
+static void writeTypeSpecifier(std::string &, const std::string &,
+                               const struct Reflection::typeSpecifier &) {
 }
 
-static void writeInfo(std::string &fileContents,
-                      const std::string &programInfoStruct,
+static void writeInfo(struct emittterStatus &s,
                       const struct Reflection::context &ctx) {
+  assignBlock(s, ".types", "(struct flr_typeInfo[])");
+
   for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
-    std::string currentType =
-      programInfoStruct + ".types[" + std::to_string(i) + "]";
+    beginBlock(s);
 
-    ASSIGN_VAL(fileContents, currentType + ".ID",
-               std::to_string(ctx.typeinfo[i].ID));
+    addLine(s);
 
-    ASSIGN_STR(fileContents, currentType + ".filename",
-               ctx.typeinfo[i].fileName);
+    endBlock(s);
 
-    ASSIGN_STR(fileContents, currentType + ".name", ctx.typeinfo[i].name);
-
-    ALLOC_MEM(fileContents, currentType + ".aliases",
-              ctx.typeinfo[i].aliases.size(), char *);
-
-    std::string aliasArray = currentType + ".aliases";
-    writeAliases(fileContents, aliasArray, ctx.typeinfo[i].aliases);
-
-    ASSIGN_VAL(fileContents, currentType + ".recordType",
-               std::to_string(ctx.typeinfo[i].recordType));
-
-    ALLOC_MEM(fileContents, currentType + ".fields",
-              ctx.typeinfo[i].fields.size(), struct flr_field);
-    for (uint64_t j = 0; j < ctx.typeinfo[i].fields.size(); j++) {
-      std::string currentField =
-        currentType + ".fields[" + std::to_string(j) + "]";
-
-      ASSIGN_STR(fileContents, currentField + ".name",
-                 ctx.typeinfo[i].fields[j].name);
-      ASSIGN_VAL(fileContents, currentField + ".offset",
-                 std::to_string(ctx.typeinfo[i].fields[j].offset));
-      writeTypeSpecifier(fileContents, currentField + ".type",
-                         ctx.typeinfo[i].fields[j].type);
-    }
-
-    fileContents += "\n\t";
+    if (i != ctx.typeinfo.size() - 1)
+      addLine(s);
   }
+
+  endBlock(s);
+
+  addLine(s);
+
+  assignBlock(s, ".enums", "(struct flr_enumInfo[])");
+
+  for (uint64_t i = 0; i < ctx.enumInfo.size(); i++) {
+    beginBlock(s);
+
+    addLine(s);
+
+    endBlock(s);
+    if (i != ctx.enumInfo.size() - 1)
+      addLine(s);
+  }
+
+  endBlock(s);
 }
 
 void Reflection::emit(const struct Reflection::context &ctx) {
@@ -107,43 +123,40 @@ void Reflection::emit(const struct Reflection::context &ctx) {
 
   std::string fileContents;
 
-  fileContents += "#include \"" + relativePath + "\"\n";
-  fileContents += "#include <stdlib.h>\n";
-  fileContents += "#include <stdint.h>\n";
-  fileContents += "#include <string.h>\n";
+  struct emittterStatus s;
+
+  s.fileContents += "#include \"" + relativePath + "\"\n";
+  s.fileContents += "#include <stdlib.h>\n";
+  s.fileContents += "#include <stdint.h>\n";
+  s.fileContents += "#include <string.h>\n";
 
   // Add more headers if needed
 
-  fileContents += "\n";
-
-  fileContents += "struct flr_programInfo flr_load(flr_Alloc allocator) {\n\t";
+  s.fileContents += "\n";
 
   std::string programInfoStruct = "info";
+  //s.fileContents += "struct flr_programInfo " + programInfoStruct + " = ";
 
-  fileContents += "struct flr_programInfo " + programInfoStruct + ";\n\t";
+  assignBlock(s, "struct flr_programInfo " + programInfoStruct);
 
-  fileContents += "\n\t";
+  assignVal(s, ".numTypes", std::to_string(ctx.typeinfo.size()));
+  assignVal(s, ".numEnums", std::to_string(ctx.enumInfo.size()));
 
-  ALLOC_MEM(fileContents, programInfoStruct + ".types", ctx.typeinfo.size(),
-            struct flr_typeInfo);
-  ASSIGN_VAL(fileContents, programInfoStruct + ".numTypes",
-             std::to_string(ctx.typeinfo.size()));
+  addLine(s);
 
-  fileContents += "\n\t";
+  writeInfo(s, ctx);
 
-  ALLOC_MEM(fileContents, programInfoStruct + ".enums", ctx.enumInfo.size(),
-            struct flr_enumInfo);
-  ASSIGN_VAL(fileContents, programInfoStruct + ".numEnums",
-             std::to_string(ctx.enumInfo.size()));
+  endBlock(s, ";");
 
-  fileContents += "\n\t";
+  addLine(s);
 
-  writeInfo(fileContents, programInfoStruct, ctx);
+  s.fileContents +=
+    "struct flr_programInfo flr_load(flr_Alloc allocator) {\n\t";
 
-  fileContents += "return " + programInfoStruct + ";\n";
-  fileContents += "}\n";
+  s.fileContents += "return " + programInfoStruct + ";\n";
+  s.fileContents += "}\n";
 
   FILE *f = fopen(ctx.outFile.c_str(), "w");
-  fwrite(fileContents.c_str(), 1, fileContents.length(), f);
+  fwrite(s.fileContents.c_str(), 1, s.fileContents.length(), f);
   fclose(f);
 }

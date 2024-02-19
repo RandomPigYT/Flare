@@ -1,3 +1,5 @@
+#include <vulkan/vulkan.h>
+
 typedef struct hello_t {
   int a;
   int b;
