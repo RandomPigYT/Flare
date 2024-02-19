@@ -26,6 +26,8 @@ enum flr_types {
   FIELD_TYPE_BITFIELD,
   FIELD_TYPE_VA_ARG,
 
+  FIELD_TYPE_PRIMITIVE, // A catch-all for all primitive types
+
   // Primitive
   // Defined by clang
   FIELD_TYPE_I8,
@@ -42,7 +44,6 @@ enum flr_types {
   FIELD_TYPE_DOUBLE,
   FIELD_TYPE_LONG_DOUBLE,
   FIELD_TYPE_VOID,
-  FIELD_TYPE_PRIMITIVE, // A catch-all for all primitive types
 
   // Complex types
   FIELD_TYPE_GNU_EXT_COMPLEX_I8 = FLR_MAKE_COMPLEX(FIELD_TYPE_I8),

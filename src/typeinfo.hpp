@@ -28,6 +28,8 @@ enum types {
   FIELD_TYPE_BITFIELD,
   FIELD_TYPE_VA_ARG,
 
+  FIELD_TYPE_PRIMITIVE, // A catch-all for all primitive types
+
   // Primitive
   // Defined by clang
   FIELD_TYPE_I8 = clang::BuiltinType::Kind::SChar,
@@ -44,7 +46,6 @@ enum types {
   FIELD_TYPE_DOUBLE = clang::BuiltinType::Double,
   FIELD_TYPE_LONG_DOUBLE = clang::BuiltinType::LongDouble,
   FIELD_TYPE_VOID = clang::BuiltinType::Void,
-  FIELD_TYPE_PRIMITIVE, // A catch-all for all primitive types
 
   // Complex types
   FIELD_TYPE_GNU_EXT_COMPLEX_I8 = REF_MAKE_COMPLEX(FIELD_TYPE_I8),

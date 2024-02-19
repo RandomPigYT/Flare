@@ -76,12 +76,57 @@ static std::string getRelativePath(std::string from, std::string to) {
   return relativePath;
 }
 
-static void writeAliases(std::string &, const std::string &,
-                         const std::vector<std::string> &) {
+static void writeAliases(struct emittterStatus &s,
+                         const std::vector<std::string> &aliases) {
+  if (!aliases.size()) {
+    addLine(s);
+    addIndent(s);
+    s.fileContents += "// No aliases\n";
+    addLine(s);
+
+    return;
+  }
+
+  for (auto &i : aliases) {
+    addIndent(s);
+    s.fileContents += "\"" + i + "\",\n";
+  }
 }
 
-static void writeTypeSpecifier(std::string &, const std::string &,
-                               const struct Reflection::typeSpecifier &) {
+static void
+writePrimitveTypeSpecifier(struct emittterStatus &s,
+                           const struct Reflection::typeSpecifier &type) {
+}
+
+static void writeTypeSpecifier(struct emittterStatus &s,
+                               const struct Reflection::typeSpecifier &type) {
+}
+
+static void writeFields(struct emittterStatus &s,
+                        const std::vector<struct Reflection::field> &fields) {
+  if (!fields.size()) {
+    addLine(s);
+    addIndent(s);
+    s.fileContents += "// No fields\n";
+    addLine(s);
+
+    return;
+  }
+  uint64_t fieldNum = 0;
+  for (auto &i : fields) {
+    beginBlock(s);
+
+    assignVal(s, ".name", "\"" + i.name + "\"");
+    assignVal(s, ".offset", std::to_string(i.offset));
+
+    assignBlock(s, ".type");
+    endBlock(s);
+
+    endBlock(s);
+
+    if (fieldNum++ != fields.size() - 1)
+      addLine(s);
+  }
 }
 
 static void writeInfo(struct emittterStatus &s,
@@ -91,7 +136,21 @@ static void writeInfo(struct emittterStatus &s,
   for (uint64_t i = 0; i < ctx.typeinfo.size(); i++) {
     beginBlock(s);
 
-    addLine(s);
+    assignVal(s, ".ID", std::to_string(ctx.typeinfo[i].ID));
+    assignVal(s, ".filename", "\"" + ctx.typeinfo[i].fileName + "\"");
+    assignVal(s, ".name", "\"" + ctx.typeinfo[i].name + "\"");
+
+    assignVal(s, ".numAliases", std::to_string(ctx.typeinfo[i].aliases.size()));
+    assignBlock(s, ".aliases", "(char (*[]))");
+    writeAliases(s, ctx.typeinfo[i].aliases);
+    endBlock(s);
+
+    assignVal(s, ".recordType", std::to_string(ctx.typeinfo[i].recordType));
+
+    assignVal(s, ".numFields", std::to_string(ctx.typeinfo[i].fields.size()));
+    assignBlock(s, ".fields", "(struct flr_field[])");
+    writeFields(s, ctx.typeinfo[i].fields);
+    endBlock(s);
 
     endBlock(s);
 
