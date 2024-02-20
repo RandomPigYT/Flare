@@ -1,4 +1,5 @@
 
 struct hello {
-  int a[5];
+  int b;
+  int a[][5][45][5];
 };

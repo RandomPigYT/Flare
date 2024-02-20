@@ -1,3 +1,4 @@
+#include <vulkan/vulkan.h>
 
 typedef struct hello_t {
   int a;
@@ -32,6 +33,7 @@ typedef struct bruh {
   struct {
     int d;
     int f;
+    int haha;
   } g;
 
   struct helloo ***lmao;

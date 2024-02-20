@@ -60,9 +60,6 @@ Reflection::constructPrimitiveSpec(clang::QualType type) {
   }
 
   else if (!type->isAnyComplexType()) {
-    clang::BuiltinType::Kind temp =
-      clang::dyn_cast<clang::BuiltinType>(type.getTypePtr())->getKind();
-
     spec.type = (enum Reflection::types)clang::dyn_cast<clang::BuiltinType>(
                   type.getTypePtr())
                   ->getKind();
@@ -163,6 +160,10 @@ static void setArrayRef(struct Reflection::arrayRef *a,
     const clang::ConstantArrayType *cat =
       clang::dyn_cast<clang::ConstantArrayType>(type);
     a->size = cat->getSize().getSExtValue();
+  }
+
+  else {
+    a->size = -1;
   }
 
   clang::QualType temp = type->getElementType();

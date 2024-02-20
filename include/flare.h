@@ -130,7 +130,7 @@ struct flr_typeInfo {
 
 struct flr_enumInfo {
   int64_t ID;
-  char *fileName;
+  char *filename;
 
   char *name;
   char **aliases;

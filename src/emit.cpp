@@ -93,13 +93,153 @@ static void writeAliases(struct emittterStatus &s,
   }
 }
 
-static void
-writePrimitveTypeSpecifier(struct emittterStatus &s,
-                           const struct Reflection::typeSpecifier &type) {
-}
-
 static void writeTypeSpecifier(struct emittterStatus &s,
                                const struct Reflection::typeSpecifier &type) {
+  switch (type.type) {
+    case Reflection::FIELD_TYPE_PTR: {
+      assignVal(s, ".type", "FIELD_TYPE_PTR");
+      assignBlock(s, ".ptrInfo", "&(struct flr_ptrRef)");
+
+      auto temp = (struct Reflection::ptrRef *)type.info;
+
+      assignVal(s, ".level", std::to_string(temp->level));
+
+      assignBlock(s, ".type");
+      writeTypeSpecifier(s, temp->type);
+      endBlock(s);
+
+      endBlock(s);
+    } break;
+
+    case Reflection::FIELD_TYPE_ARRAY: {
+      assignVal(s, ".type", "FIELD_TYPE_ARRAY");
+      assignBlock(s, ".arrayInfo", "&(struct flr_arrayRef)");
+
+      auto temp = (struct Reflection::arrayRef *)type.info;
+
+      assignVal(s, ".size", std::to_string(temp->size));
+
+      assignBlock(s, ".type");
+      writeTypeSpecifier(s, temp->type);
+      endBlock(s);
+
+      endBlock(s);
+    } break;
+
+    case Reflection::FIELD_TYPE_STRUCT:
+    case Reflection::FIELD_TYPE_UNION: {
+      if (type.type == Reflection::FIELD_TYPE_STRUCT) {
+        assignVal(s, ".type", "FIELD_TYPE_STRUCT");
+      } else {
+        assignVal(s, ".type", "FIELD_TYPE_UNION");
+      }
+
+      assignBlock(s, ".recordInfo", "&(struct flr_recordRef)");
+
+      auto temp = (struct Reflection::recordRef *)type.info;
+
+      assignVal(s, ".ID", std::to_string(temp->ID));
+      assignVal(s, ".fileName", "\"" + std::string(temp->fileName) + "\"");
+
+      endBlock(s);
+
+    } break;
+    case Reflection::FIELD_TYPE_FUNCTION: {
+      assignVal(s, ".type", "FIELD_TYPE_FUNCTION");
+    } break;
+    case Reflection::FIELD_TYPE_ENUM: {
+      assignVal(s, ".type", "FIELD_TYPE_ENUM");
+      assignBlock(s, ".recordInfo", "&(struct flr_recordRef)");
+
+      auto temp = (struct Reflection::enumRef *)type.info;
+
+      assignVal(s, ".ID", std::to_string(temp->ID));
+      assignVal(s, ".fileName", "\"" + std::string(temp->fileName) + "\"");
+
+      endBlock(s);
+    } break;
+
+    case Reflection::FIELD_TYPE_I8: {
+      assignVal(s, ".type", "FIELD_TYPE_I8");
+    } break;
+    case Reflection::FIELD_TYPE_I16: {
+      assignVal(s, ".type", "FIELD_TYPE_I16");
+    } break;
+    case Reflection::FIELD_TYPE_I32: {
+      assignVal(s, ".type", "FIELD_TYPE_I32");
+    } break;
+    case Reflection::FIELD_TYPE_I64: {
+      assignVal(s, ".type", "FIELD_TYPE_I64");
+    } break;
+    case Reflection::FIELD_TYPE_LONGLONG: {
+      assignVal(s, ".type", "FIELD_TYPE_LONGLONG");
+    } break;
+    case Reflection::FIELD_TYPE_UI8: {
+      assignVal(s, ".type", "FIELD_TYPE_UI8");
+    } break;
+    case Reflection::FIELD_TYPE_UI16: {
+      assignVal(s, ".type", "FIELD_TYPE_UI16");
+    } break;
+    case Reflection::FIELD_TYPE_UI32: {
+      assignVal(s, ".type", "FIELD_TYPE_UI32");
+    } break;
+    case Reflection::FIELD_TYPE_UI64: {
+      assignVal(s, ".type", "FIELD_TYPE_UI64");
+    } break;
+    case Reflection::FIELD_TYPE_ULONGLONG: {
+      assignVal(s, ".type", "FIELD_TYPE_ULONGLONG");
+    } break;
+    case Reflection::FIELD_TYPE_FLOAT: {
+      assignVal(s, ".type", "FIELD_TYPE_FLOAT");
+    } break;
+    case Reflection::FIELD_TYPE_DOUBLE: {
+      assignVal(s, ".type", "FIELD_TYPE_DOUBLE");
+    } break;
+    case Reflection::FIELD_TYPE_LONG_DOUBLE: {
+      assignVal(s, ".type", "FIELD_TYPE_LONG_DOUBLE");
+    } break;
+    case Reflection::FIELD_TYPE_VOID: {
+      assignVal(s, ".type", "FIELD_TYPE_VOID");
+    } break;
+
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_I8: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_I8");
+    } break;
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_I16: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_I16");
+    } break;
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_I32: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_I32");
+    } break;
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_I64: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_I64");
+    } break;
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_UI8: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_UI8");
+    } break;
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_UI16: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_UI16");
+    } break;
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_UI32: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_UI32");
+    } break;
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_UI64: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_UI64");
+    } break;
+    case Reflection::FIELD_TYPE_COMPLEX_FLOAT: {
+      assignVal(s, ".type", "FIELD_TYPE_COMPLEX_FLOAT");
+    } break;
+    case Reflection::FIELD_TYPE_COMPLEX_DOUBLE: {
+      assignVal(s, ".type", "FIELD_TYPE_COMPLEX_DOUBLE");
+    } break;
+    case Reflection::FIELD_TYPE_COMPLEX_LONG_DOUBLE: {
+      assignVal(s, ".type", "FIELD_TYPE_COMPLEX_LONG_DOUBLE");
+    } break;
+
+    default: {
+      assignVal(s, ".type", "FIELD_TYPE_NONE");
+    } break;
+  }
 }
 
 static void writeFields(struct emittterStatus &s,
@@ -120,11 +260,37 @@ static void writeFields(struct emittterStatus &s,
     assignVal(s, ".offset", std::to_string(i.offset));
 
     assignBlock(s, ".type");
+    writeTypeSpecifier(s, i.type);
     endBlock(s);
 
     endBlock(s);
 
     if (fieldNum++ != fields.size() - 1)
+      addLine(s);
+  }
+}
+
+static void
+writeConstants(struct emittterStatus &s,
+               const std::vector<struct Reflection::enumConstant> &constants) {
+  if (!constants.size()) {
+    addLine(s);
+    addIndent(s);
+    s.fileContents += "// No constants\n";
+    addLine(s);
+
+    return;
+  }
+  uint64_t constantNum = 0;
+  for (auto &i : constants) {
+    beginBlock(s);
+
+    assignVal(s, ".name", "\"" + i.name + "\"");
+    assignVal(s, ".value", std::to_string(i.value));
+
+    endBlock(s);
+
+    if (constantNum++ != constants.size() - 1)
       addLine(s);
   }
 }
@@ -167,7 +333,20 @@ static void writeInfo(struct emittterStatus &s,
   for (uint64_t i = 0; i < ctx.enumInfo.size(); i++) {
     beginBlock(s);
 
-    addLine(s);
+    assignVal(s, ".ID", std::to_string(ctx.enumInfo[i].ID));
+    assignVal(s, ".filename", "\"" + ctx.enumInfo[i].fileName + "\"");
+    assignVal(s, ".name", "\"" + ctx.enumInfo[i].name + "\"");
+
+    assignVal(s, ".numAliases", std::to_string(ctx.enumInfo[i].aliases.size()));
+    assignBlock(s, ".aliases", "(char (*[]))");
+    writeAliases(s, ctx.enumInfo[i].aliases);
+    endBlock(s);
+
+    assignVal(s, ".numConstants",
+              std::to_string(ctx.enumInfo[i].constants.size()));
+    assignBlock(s, ".constants", "(struct flr_enumConstant[])");
+    writeConstants(s, ctx.enumInfo[i].constants);
+    endBlock(s);
 
     endBlock(s);
     if (i != ctx.enumInfo.size() - 1)

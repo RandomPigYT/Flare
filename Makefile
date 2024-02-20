@@ -68,4 +68,4 @@ format: $(SRCS) $(INCLUDES)
 	@echo Formatted: $(SRCS) $(INCLUDES)
 
 test: $(TARGET)
-	./$(TARGET) testFiles/as.c testFiles/kind.c --opts --out "./emitted/out.c" --header "include/flare.h"
+	./$(TARGET) testFiles/as.c testFiles/kind.c testFiles/array.c --opts --out "./emitted/out.c" --header "include/flare.h"
