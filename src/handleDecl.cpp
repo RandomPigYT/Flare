@@ -85,7 +85,7 @@ EnumType:
 
   for (uint64_t i = 0; i < ctx.enumInfo.size(); i++) {
     if (ctx.enumInfo[i].fileName != ctx.filename ||
-        ctx.enumInfo[i].ID != td->getUnderlyingDecl()->getID()) {
+        ctx.enumInfo[i].ID != q->getAsTagDecl()->getID()) {
       continue;
     }
     ctx.enumInfo[i].aliases.push_back(td->getNameAsString());
@@ -169,6 +169,14 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
     return;
   }
 
+  int64_t typeIndex = findRecord(parent->getID(), ctx.filename, ctx);
+  if (typeIndex < 0) {
+    fprintf(stderr, "Fatal: Failed to find type: %ld\t%s\t%s\n",
+            parent->getID(), parent->getNameAsString().c_str(), ctx.filename);
+    //exit(EXIT_FAILURE);
+    return;
+  }
+
   //printf("%s\n", fd->getNameAsString().c_str());
 
   const clang::ASTRecordLayout &layout =
@@ -227,13 +235,6 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
   else if (typeEnum == Reflection::FIELD_TYPE_FUNCTION) {
     f.type = Reflection::constructFunctionSpec(
       clang::dyn_cast<clang::FunctionType>(fieldType.getTypePtr()), ctx);
-  }
-
-  int64_t typeIndex = findRecord(parent->getID(), ctx.filename, ctx);
-  if (typeIndex < 0) {
-    fprintf(stderr, "Fatal: Failed to find type: %ld\t%s\t%s\n",
-            parent->getID(), parent->getNameAsString().c_str(), ctx.filename);
-    exit(EXIT_FAILURE);
   }
 
   ctx.typeinfo[typeIndex].fields.push_back(f);

@@ -11,7 +11,7 @@ SRC:=src
 INCLUDE:=include
 
 
-TARGET:=$(BIN)/reflection
+TARGET:=$(BIN)/flare
 VALGRIND_OUT:=./val_out.txt
 
 SRCS:=$(shell find $(SRC) -type  f -name "*.cpp")
@@ -68,4 +68,4 @@ format: $(SRCS) $(INCLUDES)
 	@echo Formatted: $(SRCS) $(INCLUDES)
 
 test: $(TARGET)
-	./$(TARGET) testFiles/as.c testFiles/kind.c testFiles/array.c --opts --out "./emitted/out.c" --header "include/flare.h"
+	./$(TARGET) testFiles/enum.c testFiles/void.c testFiles/as.c testFiles/kind.c testFiles/array.c --opts --out "./emitted/out.c" --header "include/flare.h"

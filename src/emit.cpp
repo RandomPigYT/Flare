@@ -159,6 +159,17 @@ static void writeTypeSpecifier(struct emittterStatus &s,
       endBlock(s);
     } break;
 
+    case Reflection::FIELD_TYPE_BITFIELD: {
+      assignVal(s, ".type", "FIELD_TYPE_BITFIELD");
+
+      assignBlock(s, ".bitFieldInfo", "&(struct flr_bitFieldRef)");
+
+      auto temp = (struct Reflection::bitFieldRef *)type.info;
+      assignVal(s, ".bitWidth", std::to_string(temp->bitWidth));
+
+      endBlock(s);
+    } break;
+
     case Reflection::FIELD_TYPE_I8: {
       assignVal(s, ".type", "FIELD_TYPE_I8");
     } break;
@@ -225,6 +236,13 @@ static void writeTypeSpecifier(struct emittterStatus &s,
     } break;
     case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_UI64: {
       assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_UI64");
+    } break;
+
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_LONGLONG: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_LONGLONG");
+    } break;
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_ULONGLONG: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_ULONGLONG");
     } break;
     case Reflection::FIELD_TYPE_COMPLEX_FLOAT: {
       assignVal(s, ".type", "FIELD_TYPE_COMPLEX_FLOAT");
@@ -311,7 +329,11 @@ static void writeInfo(struct emittterStatus &s,
     writeAliases(s, ctx.typeinfo[i].aliases);
     endBlock(s);
 
-    assignVal(s, ".recordType", std::to_string(ctx.typeinfo[i].recordType));
+    if (ctx.typeinfo[i].recordType == Reflection::RECORD_TYPE_STRUCT) {
+      assignVal(s, ".recordType", "RECORD_TYPE_STRUCT");
+    } else {
+      assignVal(s, ".recordType", "RECORD_TYPE_UNION");
+    }
 
     assignVal(s, ".numFields", std::to_string(ctx.typeinfo[i].fields.size()));
     assignBlock(s, ".fields", "(struct flr_field[])");
@@ -364,9 +386,6 @@ void Reflection::emit(const struct Reflection::context &ctx) {
   struct emittterStatus s;
 
   s.fileContents += "#include \"" + relativePath + "\"\n";
-  s.fileContents += "#include <stdlib.h>\n";
-  s.fileContents += "#include <stdint.h>\n";
-  s.fileContents += "#include <string.h>\n";
 
   // Add more headers if needed
 
@@ -388,8 +407,7 @@ void Reflection::emit(const struct Reflection::context &ctx) {
 
   addLine(s);
 
-  s.fileContents +=
-    "struct flr_programInfo flr_load(flr_Alloc allocator) {\n\t";
+  s.fileContents += "struct flr_programInfo flr_load() {\n\t";
 
   s.fileContents += "return " + programInfoStruct + ";\n";
   s.fileContents += "}\n";

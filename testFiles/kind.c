@@ -18,6 +18,12 @@ struct hi {
   complex float l;
   complex double m;
   complex long double n;
-  complex int o;
+
+  complex char o;
+  complex short s;
+  complex int t;
+  complex long u;
+  complex long long v;
+
   void *p;
 };

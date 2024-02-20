@@ -1,13 +1,148 @@
 #include "../include/flare.h"
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
 
 struct flr_programInfo info = {
-	.numTypes = 9,
-	.numEnums = 0,
+	.numTypes = 13,
+	.numEnums = 3,
 
 	.types = (struct flr_typeInfo[]) {
+		{
+			.ID = 635,
+			.filename = "/home/randompigyt/Reflection/testFiles/enum.c",
+			.name = "struct hi",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 3,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "a",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_ENUM,
+						.recordInfo = &(struct flr_recordRef) {
+							.ID = 512,
+							.fileName = "/home/randompigyt/Reflection/testFiles/enum.c",
+						},
+					},
+				},
+
+				{
+					.name = "b",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_ENUM,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 556,
+									.fileName = "/home/randompigyt/Reflection/testFiles/enum.c",
+								},
+							},
+						},
+					},
+				},
+
+				{
+					.name = "c",
+					.offset = 128,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 2,
+							.type = {
+								.type = FIELD_TYPE_ENUM,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 712,
+									.fileName = "/home/randompigyt/Reflection/testFiles/enum.c",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 1077,
+			.filename = "/home/randompigyt/Reflection/testFiles/void.c",
+			.name = "",
+			.numAliases = 1,
+			.aliases = (char (*[])) {
+				"__fsid_t",
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 1,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "__val",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_ARRAY,
+						.arrayInfo = &(struct flr_arrayRef) {
+							.size = 2,
+							.type = {
+								.type = FIELD_TYPE_I32,
+							},
+						},
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 2067,
+			.filename = "/home/randompigyt/Reflection/testFiles/void.c",
+			.name = "struct a",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 3,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "a",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_BITFIELD,
+						.bitFieldInfo = &(struct flr_bitFieldRef) {
+							.bitWidth = 35,
+						},
+					},
+				},
+
+				{
+					.name = "b",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_BITFIELD,
+						.bitFieldInfo = &(struct flr_bitFieldRef) {
+							.bitWidth = 32,
+						},
+					},
+				},
+
+				{
+					.name = "c",
+					.offset = 96,
+					.type = {
+						.type = FIELD_TYPE_BITFIELD,
+						.bitFieldInfo = &(struct flr_bitFieldRef) {
+							.bitWidth = 2,
+						},
+					},
+				},
+			},
+		},
+
 		{
 			.ID = 512,
 			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
@@ -16,7 +151,7 @@ struct flr_programInfo info = {
 			.aliases = (char (*[])) {
 				"hello",
 			},
-			.recordType = 0,
+			.recordType = RECORD_TYPE_STRUCT,
 			.numFields = 3,
 			.fields = (struct flr_field[]) {
 				{
@@ -59,7 +194,7 @@ struct flr_programInfo info = {
 			.aliases = (char (*[])) {
 				"Hi",
 			},
-			.recordType = 0,
+			.recordType = RECORD_TYPE_STRUCT,
 			.numFields = 1,
 			.fields = (struct flr_field[]) {
 				{
@@ -82,7 +217,7 @@ struct flr_programInfo info = {
 				// No aliases
 
 			},
-			.recordType = 1,
+			.recordType = RECORD_TYPE_UNION,
 			.numFields = 2,
 			.fields = (struct flr_field[]) {
 				{
@@ -113,7 +248,7 @@ struct flr_programInfo info = {
 				// No aliases
 
 			},
-			.recordType = 0,
+			.recordType = RECORD_TYPE_STRUCT,
 			.numFields = 1,
 			.fields = (struct flr_field[]) {
 				{
@@ -137,8 +272,8 @@ struct flr_programInfo info = {
 				"YooHoo",
 				"fml",
 			},
-			.recordType = 0,
-			.numFields = 8,
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 10,
 			.fields = (struct flr_field[]) {
 				{
 					.name = "",
@@ -215,8 +350,38 @@ struct flr_programInfo info = {
 				},
 
 				{
-					.name = "a",
+					.name = "u",
 					.offset = 320,
+					.type = {
+						.type = FIELD_TYPE_UNION,
+						.recordInfo = &(struct flr_recordRef) {
+							.ID = 701,
+							.fileName = "/home/randompigyt/Reflection/testFiles/as.c",
+						},
+					},
+				},
+
+				{
+					.name = "z",
+					.offset = 384,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_STRUCT,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 1160,
+									.fileName = "/home/randompigyt/Reflection/testFiles/as.c",
+								},
+							},
+						},
+					},
+				},
+
+				{
+					.name = "a",
+					.offset = 448,
 					.type = {
 						.type = FIELD_TYPE_I32,
 					},
@@ -234,7 +399,46 @@ struct flr_programInfo info = {
 				// No aliases
 
 			},
-			.recordType = 0,
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 3,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "d",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_I32,
+					},
+				},
+
+				{
+					.name = "f",
+					.offset = 32,
+					.type = {
+						.type = FIELD_TYPE_I32,
+					},
+				},
+
+				{
+					.name = "haha",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_I32,
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 1160,
+			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
+			.name = "",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
 			.numFields = 3,
 			.fields = (struct flr_field[]) {
 				{
@@ -271,7 +475,7 @@ struct flr_programInfo info = {
 			.aliases = (char (*[])) {
 				"__fsid_t",
 			},
-			.recordType = 0,
+			.recordType = RECORD_TYPE_STRUCT,
 			.numFields = 1,
 			.fields = (struct flr_field[]) {
 				{
@@ -300,8 +504,8 @@ struct flr_programInfo info = {
 				// No aliases
 
 			},
-			.recordType = 0,
-			.numFields = 18,
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 22,
 			.fields = (struct flr_field[]) {
 				{
 					.name = "a",
@@ -435,13 +639,45 @@ struct flr_programInfo info = {
 					.name = "o",
 					.offset = 1152,
 					.type = {
+						.type = FIELD_TYPE_NONE,
+					},
+				},
+
+				{
+					.name = "s",
+					.offset = 1168,
+					.type = {
+						.type = FIELD_TYPE_GNU_EXT_COMPLEX_I16,
+					},
+				},
+
+				{
+					.name = "t",
+					.offset = 1216,
+					.type = {
 						.type = FIELD_TYPE_GNU_EXT_COMPLEX_I32,
 					},
 				},
 
 				{
+					.name = "u",
+					.offset = 1280,
+					.type = {
+						.type = FIELD_TYPE_GNU_EXT_COMPLEX_I64,
+					},
+				},
+
+				{
+					.name = "v",
+					.offset = 1408,
+					.type = {
+						.type = FIELD_TYPE_GNU_EXT_COMPLEX_LONGLONG,
+					},
+				},
+
+				{
 					.name = "p",
-					.offset = 1216,
+					.offset = 1536,
 					.type = {
 						.type = FIELD_TYPE_PTR,
 						.ptrInfo = &(struct flr_ptrRef) {
@@ -465,7 +701,7 @@ struct flr_programInfo info = {
 				// No aliases
 
 			},
-			.recordType = 0,
+			.recordType = RECORD_TYPE_STRUCT,
 			.numFields = 2,
 			.fields = (struct flr_field[]) {
 				{
@@ -512,9 +748,77 @@ struct flr_programInfo info = {
 	},
 
 	.enums = (struct flr_enumInfo[]) {
+		{
+			.ID = 512,
+			.filename = "/home/randompigyt/Reflection/testFiles/enum.c",
+			.name = "enum Hello",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.numConstants = 2,
+			.constants = (struct flr_enumConstant[]) {
+				{
+					.name = "HI",
+					.value = 0,
+				},
+
+				{
+					.name = "BYE",
+					.value = 1,
+				},
+			},
+		},
+
+		{
+			.ID = 556,
+			.filename = "/home/randompigyt/Reflection/testFiles/enum.c",
+			.name = "",
+			.numAliases = 1,
+			.aliases = (char (*[])) {
+				"fu",
+			},
+			.numConstants = 3,
+			.constants = (struct flr_enumConstant[]) {
+				{
+					.name = "WHOO",
+					.value = 0,
+				},
+
+				{
+					.name = "WHEE",
+					.value = 1,
+				},
+
+				{
+					.name = "FUCK_ME",
+					.value = 2,
+				},
+			},
+		},
+
+		{
+			.ID = 712,
+			.filename = "/home/randompigyt/Reflection/testFiles/enum.c",
+			.name = "enum hell",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.numConstants = 0,
+			.constants = (struct flr_enumConstant[]) {
+
+				// No constants
+
+			},
+		},
 	},
 };
 
-struct flr_programInfo flr_load(flr_Alloc allocator) {
+struct flr_programInfo flr_load() {
 	return info;
 }

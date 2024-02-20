@@ -37,6 +37,14 @@ typedef struct bruh {
 
   struct helloo ***lmao;
 
+  union Hello_u u;
+
+  struct {
+    int d;
+    int f;
+    int haha;
+  } *z;
+
   int a;
 } bruh;
 

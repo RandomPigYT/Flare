@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
 
   uint64_t optionsStart;
   if (parseArgs(ctx, &optionsStart)) {
-    printf("Out file: %s\nReflection header: %s\n", ctx.outFile.c_str(),
+    printf("\nOut file: %s\nReflection header: %s\n", ctx.outFile.c_str(),
            ctx.reflectionHeader.c_str());
   }
 
@@ -99,42 +99,42 @@ int main(int argc, char **argv) {
 
   tool.run(Reflection::customFrontendActionFactory(ctx).get());
 
-  for (auto i : ctx.typeinfo) {
-    std::cout
-      << "Type: "
-      << (i.recordType == Reflection::RECORD_TYPE_STRUCT ? "Struct" : "Union")
-      << "\t";
-    std::cout << "Name: " << (i.name.length() ? i.name : "(Unnamed)")
-              << "\tTypedefs: ";
-    for (auto j : i.aliases) {
-      std::cout << j << "\t";
-    }
+  //for (auto i : ctx.typeinfo) {
+  //  std::cout
+  //    << "Type: "
+  //    << (i.recordType == Reflection::RECORD_TYPE_STRUCT ? "Struct" : "Union")
+  //    << "\t";
+  //  std::cout << "Name: " << (i.name.length() ? i.name : "(Unnamed)")
+  //            << "\tTypedefs: ";
+  //  for (auto j : i.aliases) {
+  //    std::cout << j << "\t";
+  //  }
 
-    std::cout << std::endl << "Fields" << std::endl;
-    std::cout << "\t";
-    for (auto j : i.fields) {
-      std::cout << "Name: " << (j.name.length() ? j.name : "(Unnamed)") << "\t"
-                << "Type: " << (j.type.type & (0xffffffff ^ (1 << 31))) << "\t"
-                << ((j.type.type & (1 << 31)) ? "complex" : "") << "\n\t";
-    }
-    std::cout << std::endl;
-  }
+  //  std::cout << std::endl << "Fields" << std::endl;
+  //  std::cout << "\t";
+  //  for (auto j : i.fields) {
+  //    std::cout << "Name: " << (j.name.length() ? j.name : "(Unnamed)") << "\t"
+  //              << "Type: " << (j.type.type & (0xffffffff ^ (1 << 31))) << "\t"
+  //              << ((j.type.type & (1 << 31)) ? "complex" : "") << "\n\t";
+  //  }
+  //  std::cout << std::endl;
+  //}
 
-  for (auto i : ctx.enumInfo) {
-    std::cout << "Enum name: " << (i.name.length() ? i.name : "(Unnamed)")
-              << "\t";
-    std::cout << "Typedefs: ";
-    for (auto j : i.aliases) {
-      std::cout << j << "\t";
-    }
-    std::cout << std::endl << "Constants" << std::endl << "\t";
+  //for (auto i : ctx.enumInfo) {
+  //  std::cout << "Enum name: " << (i.name.length() ? i.name : "(Unnamed)")
+  //            << "\t";
+  //  std::cout << "Typedefs: ";
+  //  for (auto j : i.aliases) {
+  //    std::cout << j << "\t";
+  //  }
+  //  std::cout << std::endl << "Constants" << std::endl << "\t";
 
-    for (auto j : i.constants) {
-      std::cout << "Name: " << j.name << "\t"
-                << "Value: " << j.value << "\n\t";
-    }
-    std::cout << std::endl;
-  }
+  //  for (auto j : i.constants) {
+  //    std::cout << "Name: " << j.name << "\t"
+  //              << "Value: " << j.value << "\n\t";
+  //  }
+  //  std::cout << std::endl;
+  //}
 
   Reflection::emit(ctx);
   return 0;
