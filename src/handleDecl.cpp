@@ -17,6 +17,10 @@ void Reflection::handleRecordDecl(clang::RecordDecl *rd, struct context &ctx) {
   if (rd->isAnonymousStructOrUnion())
     return;
 
+  // This could brak things
+  if (!rd->isCompleteDefinition())
+    return;
+
   struct Reflection::typeInfo t;
 
   t.ID = rd->getID();
@@ -208,6 +212,10 @@ void Reflection::handleFieldDecl(clang::FieldDecl *fd, struct context &ctx,
   }
 
   else if (typeEnum == Reflection::FIELD_TYPE_RECORD) {
+    if (fieldType->getAsRecordDecl()->isAnonymousStructOrUnion()) {
+      return;
+    }
+
     f.type = Reflection::constructRecordSpec(fieldType->getAsRecordDecl(),
                                              ctx.filename);
   }

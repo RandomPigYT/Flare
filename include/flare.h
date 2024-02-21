@@ -30,6 +30,7 @@ enum flr_types {
 
   // Primitive
   // Defined by clang
+  FIELD_TYPE_CHAR,
   FIELD_TYPE_I8,
   FIELD_TYPE_I16,
   FIELD_TYPE_I32,
@@ -46,6 +47,7 @@ enum flr_types {
   FIELD_TYPE_VOID,
 
   // Complex types
+  FIELD_TYPE_GNU_EXT_COMPLEX_CHAR = FLR_MAKE_COMPLEX(FIELD_TYPE_CHAR),
   FIELD_TYPE_GNU_EXT_COMPLEX_I8 = FLR_MAKE_COMPLEX(FIELD_TYPE_I8),
   FIELD_TYPE_GNU_EXT_COMPLEX_I16 = FLR_MAKE_COMPLEX(FIELD_TYPE_I16),
   FIELD_TYPE_GNU_EXT_COMPLEX_I32 = FLR_MAKE_COMPLEX(FIELD_TYPE_I32),
@@ -81,12 +83,12 @@ struct flr_typeSpecifier {
 
 struct flr_recordRef {
   int64_t ID;
-  char *fileName;
+  char *filename;
 };
 
 struct flr_enumRef {
   int64_t ID;
-  char *fileName;
+  char *filename;
 };
 
 struct flr_arrayRef {

@@ -139,7 +139,7 @@ static void writeTypeSpecifier(struct emittterStatus &s,
       auto temp = (struct Reflection::recordRef *)type.info;
 
       assignVal(s, ".ID", std::to_string(temp->ID));
-      assignVal(s, ".fileName", "\"" + std::string(temp->fileName) + "\"");
+      assignVal(s, ".filename", "\"" + std::string(temp->fileName) + "\"");
 
       endBlock(s);
 
@@ -149,12 +149,12 @@ static void writeTypeSpecifier(struct emittterStatus &s,
     } break;
     case Reflection::FIELD_TYPE_ENUM: {
       assignVal(s, ".type", "FIELD_TYPE_ENUM");
-      assignBlock(s, ".recordInfo", "&(struct flr_recordRef)");
+      assignBlock(s, ".enumInfo", "&(struct flr_enumRef)");
 
       auto temp = (struct Reflection::enumRef *)type.info;
 
       assignVal(s, ".ID", std::to_string(temp->ID));
-      assignVal(s, ".fileName", "\"" + std::string(temp->fileName) + "\"");
+      assignVal(s, ".filename", "\"" + std::string(temp->fileName) + "\"");
 
       endBlock(s);
     } break;
@@ -170,6 +170,9 @@ static void writeTypeSpecifier(struct emittterStatus &s,
       endBlock(s);
     } break;
 
+    case Reflection::FIELD_TYPE_CHAR: {
+      assignVal(s, ".type", "FIELD_TYPE_CHAR");
+    } break;
     case Reflection::FIELD_TYPE_I8: {
       assignVal(s, ".type", "FIELD_TYPE_I8");
     } break;
@@ -213,6 +216,9 @@ static void writeTypeSpecifier(struct emittterStatus &s,
       assignVal(s, ".type", "FIELD_TYPE_VOID");
     } break;
 
+    case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_CHAR: {
+      assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_CHAR");
+    } break;
     case Reflection::FIELD_TYPE_GNU_EXT_COMPLEX_I8: {
       assignVal(s, ".type", "FIELD_TYPE_GNU_EXT_COMPLEX_I8");
     } break;

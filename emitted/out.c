@@ -1,14 +1,41 @@
 #include "../include/flare.h"
 
 struct flr_programInfo info = {
-	.numTypes = 13,
-	.numEnums = 3,
+	.numTypes = 17,
+	.numEnums = 2,
 
 	.types = (struct flr_typeInfo[]) {
 		{
-			.ID = 635,
-			.filename = "/home/randompigyt/Reflection/testFiles/enum.c",
-			.name = "struct hi",
+			.ID = 1077,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "",
+			.numAliases = 1,
+			.aliases = (char (*[])) {
+				"__fsid_t",
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 1,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "__val",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_ARRAY,
+						.arrayInfo = &(struct flr_arrayRef) {
+							.size = 2,
+							.type = {
+								.type = FIELD_TYPE_I32,
+							},
+						},
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 3082,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_typeSpecifier",
 			.numAliases = 0,
 			.aliases = (char (*[])) {
 
@@ -16,32 +43,32 @@ struct flr_programInfo info = {
 
 			},
 			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 3,
+			.numFields = 6,
 			.fields = (struct flr_field[]) {
 				{
-					.name = "a",
+					.name = "type",
 					.offset = 0,
 					.type = {
 						.type = FIELD_TYPE_ENUM,
-						.recordInfo = &(struct flr_recordRef) {
-							.ID = 512,
-							.fileName = "/home/randompigyt/Reflection/testFiles/enum.c",
+						.enumInfo = &(struct flr_enumRef) {
+							.ID = 2201,
+							.filename = "/home/randompigyt/Reflection/emitted/out.c",
 						},
 					},
 				},
 
 				{
-					.name = "b",
+					.name = "recordInfo",
 					.offset = 64,
 					.type = {
 						.type = FIELD_TYPE_PTR,
 						.ptrInfo = &(struct flr_ptrRef) {
 							.level = 1,
 							.type = {
-								.type = FIELD_TYPE_ENUM,
+								.type = FIELD_TYPE_STRUCT,
 								.recordInfo = &(struct flr_recordRef) {
-									.ID = 556,
-									.fileName = "/home/randompigyt/Reflection/testFiles/enum.c",
+									.ID = 3498,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
 								},
 							},
 						},
@@ -49,17 +76,71 @@ struct flr_programInfo info = {
 				},
 
 				{
-					.name = "c",
-					.offset = 128,
+					.name = "enumInfo",
+					.offset = 64,
 					.type = {
 						.type = FIELD_TYPE_PTR,
 						.ptrInfo = &(struct flr_ptrRef) {
-							.level = 2,
+							.level = 1,
 							.type = {
-								.type = FIELD_TYPE_ENUM,
+								.type = FIELD_TYPE_STRUCT,
 								.recordInfo = &(struct flr_recordRef) {
-									.ID = 712,
-									.fileName = "/home/randompigyt/Reflection/testFiles/enum.c",
+									.ID = 3551,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
+								},
+							},
+						},
+					},
+				},
+
+				{
+					.name = "arrayInfo",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_STRUCT,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 3594,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
+								},
+							},
+						},
+					},
+				},
+
+				{
+					.name = "ptrInfo",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_STRUCT,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 3669,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
+								},
+							},
+						},
+					},
+				},
+
+				{
+					.name = "bitFieldInfo",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_STRUCT,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 3724,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
 								},
 							},
 						},
@@ -69,36 +150,9 @@ struct flr_programInfo info = {
 		},
 
 		{
-			.ID = 1077,
-			.filename = "/home/randompigyt/Reflection/testFiles/void.c",
-			.name = "",
-			.numAliases = 1,
-			.aliases = (char (*[])) {
-				"__fsid_t",
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 1,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "__val",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_ARRAY,
-						.arrayInfo = &(struct flr_arrayRef) {
-							.size = 2,
-							.type = {
-								.type = FIELD_TYPE_I32,
-							},
-						},
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 2067,
-			.filename = "/home/randompigyt/Reflection/testFiles/void.c",
-			.name = "struct a",
+			.ID = 3142,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_recordRef",
 			.numAliases = 0,
 			.aliases = (char (*[])) {
 
@@ -106,473 +160,408 @@ struct flr_programInfo info = {
 
 			},
 			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 3,
+			.numFields = 0,
 			.fields = (struct flr_field[]) {
-				{
-					.name = "a",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_BITFIELD,
-						.bitFieldInfo = &(struct flr_bitFieldRef) {
-							.bitWidth = 35,
-						},
-					},
-				},
 
-				{
-					.name = "b",
-					.offset = 64,
-					.type = {
-						.type = FIELD_TYPE_BITFIELD,
-						.bitFieldInfo = &(struct flr_bitFieldRef) {
-							.bitWidth = 32,
-						},
-					},
-				},
+				// No fields
 
-				{
-					.name = "c",
-					.offset = 96,
-					.type = {
-						.type = FIELD_TYPE_BITFIELD,
-						.bitFieldInfo = &(struct flr_bitFieldRef) {
-							.bitWidth = 2,
-						},
-					},
-				},
 			},
 		},
 
 		{
-			.ID = 512,
-			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
-			.name = "struct hello_t",
-			.numAliases = 1,
-			.aliases = (char (*[])) {
-				"hello",
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 3,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "a",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "b",
-					.offset = 32,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "f",
-					.offset = 64,
-					.type = {
-						.type = FIELD_TYPE_PTR,
-						.ptrInfo = &(struct flr_ptrRef) {
-							.level = 1,
-							.type = {
-								.type = FIELD_TYPE_FUNCTION,
-							},
-						},
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 641,
-			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
-			.name = "",
-			.numAliases = 1,
-			.aliases = (char (*[])) {
-				"Hi",
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 1,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "a",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 701,
-			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
-			.name = "union Hello_u",
+			.ID = 3198,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_enumRef",
 			.numAliases = 0,
 			.aliases = (char (*[])) {
 
 				// No aliases
 
 			},
-			.recordType = RECORD_TYPE_UNION,
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 0,
+			.fields = (struct flr_field[]) {
+
+				// No fields
+
+			},
+		},
+
+		{
+			.ID = 3254,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_arrayRef",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 0,
+			.fields = (struct flr_field[]) {
+
+				// No fields
+
+			},
+		},
+
+		{
+			.ID = 3310,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_ptrRef",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 0,
+			.fields = (struct flr_field[]) {
+
+				// No fields
+
+			},
+		},
+
+		{
+			.ID = 3366,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_bitFieldRef",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 0,
+			.fields = (struct flr_field[]) {
+
+				// No fields
+
+			},
+		},
+
+		{
+			.ID = 3498,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_recordRef",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
 			.numFields = 2,
 			.fields = (struct flr_field[]) {
 				{
-					.name = "uniono",
+					.name = "ID",
 					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "amiinsamemem",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 748,
-			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
-			.name = "struct helloo",
-			.numAliases = 0,
-			.aliases = (char (*[])) {
-
-				// No aliases
-
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 1,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "a",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 781,
-			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
-			.name = "struct bruh",
-			.numAliases = 4,
-			.aliases = (char (*[])) {
-				"bruh",
-				"gae",
-				"YooHoo",
-				"fml",
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 10,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_STRUCT,
-						.recordInfo = &(struct flr_recordRef) {
-							.ID = 802,
-							.fileName = "/home/randompigyt/Reflection/testFiles/as.c",
-						},
-					},
-				},
-
-				{
-					.name = "c",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "b",
-					.offset = 32,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "h",
-					.offset = 64,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "f",
-					.offset = 96,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "g",
-					.offset = 128,
-					.type = {
-						.type = FIELD_TYPE_STRUCT,
-						.recordInfo = &(struct flr_recordRef) {
-							.ID = 994,
-							.fileName = "/home/randompigyt/Reflection/testFiles/as.c",
-						},
-					},
-				},
-
-				{
-					.name = "lmao",
-					.offset = 256,
-					.type = {
-						.type = FIELD_TYPE_PTR,
-						.ptrInfo = &(struct flr_ptrRef) {
-							.level = 3,
-							.type = {
-								.type = FIELD_TYPE_STRUCT,
-								.recordInfo = &(struct flr_recordRef) {
-									.ID = 748,
-									.fileName = "/home/randompigyt/Reflection/testFiles/as.c",
-								},
-							},
-						},
-					},
-				},
-
-				{
-					.name = "u",
-					.offset = 320,
-					.type = {
-						.type = FIELD_TYPE_UNION,
-						.recordInfo = &(struct flr_recordRef) {
-							.ID = 701,
-							.fileName = "/home/randompigyt/Reflection/testFiles/as.c",
-						},
-					},
-				},
-
-				{
-					.name = "z",
-					.offset = 384,
-					.type = {
-						.type = FIELD_TYPE_PTR,
-						.ptrInfo = &(struct flr_ptrRef) {
-							.level = 1,
-							.type = {
-								.type = FIELD_TYPE_STRUCT,
-								.recordInfo = &(struct flr_recordRef) {
-									.ID = 1160,
-									.fileName = "/home/randompigyt/Reflection/testFiles/as.c",
-								},
-							},
-						},
-					},
-				},
-
-				{
-					.name = "a",
-					.offset = 448,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 994,
-			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
-			.name = "",
-			.numAliases = 0,
-			.aliases = (char (*[])) {
-
-				// No aliases
-
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 3,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "d",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "f",
-					.offset = 32,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "haha",
-					.offset = 64,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 1160,
-			.filename = "/home/randompigyt/Reflection/testFiles/as.c",
-			.name = "",
-			.numAliases = 0,
-			.aliases = (char (*[])) {
-
-				// No aliases
-
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 3,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "d",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "f",
-					.offset = 32,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "haha",
-					.offset = 64,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 1077,
-			.filename = "/home/randompigyt/Reflection/testFiles/kind.c",
-			.name = "",
-			.numAliases = 1,
-			.aliases = (char (*[])) {
-				"__fsid_t",
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 1,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "__val",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_ARRAY,
-						.arrayInfo = &(struct flr_arrayRef) {
-							.size = 2,
-							.type = {
-								.type = FIELD_TYPE_I32,
-							},
-						},
-					},
-				},
-			},
-		},
-
-		{
-			.ID = 23656,
-			.filename = "/home/randompigyt/Reflection/testFiles/kind.c",
-			.name = "struct hi",
-			.numAliases = 0,
-			.aliases = (char (*[])) {
-
-				// No aliases
-
-			},
-			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 22,
-			.fields = (struct flr_field[]) {
-				{
-					.name = "a",
-					.offset = 0,
-					.type = {
-						.type = FIELD_TYPE_I8,
-					},
-				},
-
-				{
-					.name = "b",
-					.offset = 16,
-					.type = {
-						.type = FIELD_TYPE_I16,
-					},
-				},
-
-				{
-					.name = "c",
-					.offset = 32,
-					.type = {
-						.type = FIELD_TYPE_I32,
-					},
-				},
-
-				{
-					.name = "d",
-					.offset = 64,
 					.type = {
 						.type = FIELD_TYPE_I64,
 					},
 				},
 
 				{
-					.name = "q",
+					.name = "filename",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 3551,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_enumRef",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 2,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "ID",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_I64,
+					},
+				},
+
+				{
+					.name = "filename",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 3594,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_arrayRef",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 2,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "type",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_STRUCT,
+						.recordInfo = &(struct flr_recordRef) {
+							.ID = 3082,
+							.filename = "/home/randompigyt/Reflection/emitted/out.c",
+						},
+					},
+				},
+
+				{
+					.name = "size",
 					.offset = 128,
 					.type = {
-						.type = FIELD_TYPE_LONGLONG,
+						.type = FIELD_TYPE_I64,
 					},
 				},
+			},
+		},
 
+		{
+			.ID = 3669,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_ptrRef",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 2,
+			.fields = (struct flr_field[]) {
 				{
-					.name = "e",
-					.offset = 192,
+					.name = "type",
+					.offset = 0,
 					.type = {
-						.type = FIELD_TYPE_UI8,
+						.type = FIELD_TYPE_STRUCT,
+						.recordInfo = &(struct flr_recordRef) {
+							.ID = 3082,
+							.filename = "/home/randompigyt/Reflection/emitted/out.c",
+						},
 					},
 				},
 
 				{
-					.name = "f",
-					.offset = 208,
-					.type = {
-						.type = FIELD_TYPE_UI16,
-					},
-				},
-
-				{
-					.name = "g",
-					.offset = 224,
+					.name = "level",
+					.offset = 128,
 					.type = {
 						.type = FIELD_TYPE_UI32,
 					},
 				},
+			},
+		},
+
+		{
+			.ID = 3724,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_bitFieldRef",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 1,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "bitWidth",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_UI32,
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 3752,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_field",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 3,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "name",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
 
 				{
-					.name = "h",
+					.name = "type",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_STRUCT,
+						.recordInfo = &(struct flr_recordRef) {
+							.ID = 3082,
+							.filename = "/home/randompigyt/Reflection/emitted/out.c",
+						},
+					},
+				},
+
+				{
+					.name = "offset",
+					.offset = 192,
+					.type = {
+						.type = FIELD_TYPE_UI64,
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 3811,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_enumConstant",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 2,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "name",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+
+				{
+					.name = "value",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_I32,
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 3870,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_typeInfo",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 8,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "ID",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_I64,
+					},
+				},
+
+				{
+					.name = "filename",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+
+				{
+					.name = "name",
+					.offset = 128,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+
+				{
+					.name = "aliases",
+					.offset = 192,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 2,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+
+				{
+					.name = "numAliases",
 					.offset = 256,
 					.type = {
 						.type = FIELD_TYPE_UI64,
@@ -580,121 +569,49 @@ struct flr_programInfo info = {
 				},
 
 				{
-					.name = "r",
+					.name = "recordType",
 					.offset = 320,
 					.type = {
-						.type = FIELD_TYPE_ULONGLONG,
+						.type = FIELD_TYPE_ENUM,
+						.enumInfo = &(struct flr_enumRef) {
+							.ID = 3038,
+							.filename = "/home/randompigyt/Reflection/emitted/out.c",
+						},
 					},
 				},
 
 				{
-					.name = "i",
+					.name = "fields",
 					.offset = 384,
-					.type = {
-						.type = FIELD_TYPE_FLOAT,
-					},
-				},
-
-				{
-					.name = "j",
-					.offset = 448,
-					.type = {
-						.type = FIELD_TYPE_DOUBLE,
-					},
-				},
-
-				{
-					.name = "k",
-					.offset = 512,
-					.type = {
-						.type = FIELD_TYPE_LONG_DOUBLE,
-					},
-				},
-
-				{
-					.name = "l",
-					.offset = 640,
-					.type = {
-						.type = FIELD_TYPE_COMPLEX_FLOAT,
-					},
-				},
-
-				{
-					.name = "m",
-					.offset = 704,
-					.type = {
-						.type = FIELD_TYPE_COMPLEX_DOUBLE,
-					},
-				},
-
-				{
-					.name = "n",
-					.offset = 896,
-					.type = {
-						.type = FIELD_TYPE_COMPLEX_LONG_DOUBLE,
-					},
-				},
-
-				{
-					.name = "o",
-					.offset = 1152,
-					.type = {
-						.type = FIELD_TYPE_NONE,
-					},
-				},
-
-				{
-					.name = "s",
-					.offset = 1168,
-					.type = {
-						.type = FIELD_TYPE_GNU_EXT_COMPLEX_I16,
-					},
-				},
-
-				{
-					.name = "t",
-					.offset = 1216,
-					.type = {
-						.type = FIELD_TYPE_GNU_EXT_COMPLEX_I32,
-					},
-				},
-
-				{
-					.name = "u",
-					.offset = 1280,
-					.type = {
-						.type = FIELD_TYPE_GNU_EXT_COMPLEX_I64,
-					},
-				},
-
-				{
-					.name = "v",
-					.offset = 1408,
-					.type = {
-						.type = FIELD_TYPE_GNU_EXT_COMPLEX_LONGLONG,
-					},
-				},
-
-				{
-					.name = "p",
-					.offset = 1536,
 					.type = {
 						.type = FIELD_TYPE_PTR,
 						.ptrInfo = &(struct flr_ptrRef) {
 							.level = 1,
 							.type = {
-								.type = FIELD_TYPE_VOID,
+								.type = FIELD_TYPE_STRUCT,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 3752,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
+								},
 							},
 						},
+					},
+				},
+
+				{
+					.name = "numFields",
+					.offset = 448,
+					.type = {
+						.type = FIELD_TYPE_UI64,
 					},
 				},
 			},
 		},
 
 		{
-			.ID = 512,
-			.filename = "/home/randompigyt/Reflection/testFiles/array.c",
-			.name = "struct hello",
+			.ID = 4022,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_enumInfo",
 			.numAliases = 0,
 			.aliases = (char (*[])) {
 
@@ -702,45 +619,156 @@ struct flr_programInfo info = {
 
 			},
 			.recordType = RECORD_TYPE_STRUCT,
-			.numFields = 2,
+			.numFields = 7,
 			.fields = (struct flr_field[]) {
 				{
-					.name = "b",
+					.name = "ID",
 					.offset = 0,
 					.type = {
-						.type = FIELD_TYPE_I32,
+						.type = FIELD_TYPE_I64,
 					},
 				},
 
 				{
-					.name = "a",
-					.offset = 32,
+					.name = "filename",
+					.offset = 64,
 					.type = {
-						.type = FIELD_TYPE_ARRAY,
-						.arrayInfo = &(struct flr_arrayRef) {
-							.size = -1,
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
 							.type = {
-								.type = FIELD_TYPE_ARRAY,
-								.arrayInfo = &(struct flr_arrayRef) {
-									.size = 5,
-									.type = {
-										.type = FIELD_TYPE_ARRAY,
-										.arrayInfo = &(struct flr_arrayRef) {
-											.size = 45,
-											.type = {
-												.type = FIELD_TYPE_ARRAY,
-												.arrayInfo = &(struct flr_arrayRef) {
-													.size = 5,
-													.type = {
-														.type = FIELD_TYPE_I32,
-													},
-												},
-											},
-										},
-									},
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+
+				{
+					.name = "name",
+					.offset = 128,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+
+				{
+					.name = "aliases",
+					.offset = 192,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 2,
+							.type = {
+								.type = FIELD_TYPE_CHAR,
+							},
+						},
+					},
+				},
+
+				{
+					.name = "numAliases",
+					.offset = 256,
+					.type = {
+						.type = FIELD_TYPE_UI64,
+					},
+				},
+
+				{
+					.name = "constants",
+					.offset = 320,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_STRUCT,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 3811,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
 								},
 							},
 						},
+					},
+				},
+
+				{
+					.name = "numConstants",
+					.offset = 384,
+					.type = {
+						.type = FIELD_TYPE_UI64,
+					},
+				},
+			},
+		},
+
+		{
+			.ID = 4150,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "struct flr_programInfo",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.recordType = RECORD_TYPE_STRUCT,
+			.numFields = 4,
+			.fields = (struct flr_field[]) {
+				{
+					.name = "types",
+					.offset = 0,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_STRUCT,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 3870,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
+								},
+							},
+						},
+					},
+				},
+
+				{
+					.name = "numTypes",
+					.offset = 64,
+					.type = {
+						.type = FIELD_TYPE_UI64,
+					},
+				},
+
+				{
+					.name = "enums",
+					.offset = 128,
+					.type = {
+						.type = FIELD_TYPE_PTR,
+						.ptrInfo = &(struct flr_ptrRef) {
+							.level = 1,
+							.type = {
+								.type = FIELD_TYPE_STRUCT,
+								.recordInfo = &(struct flr_recordRef) {
+									.ID = 4022,
+									.filename = "/home/randompigyt/Reflection/emitted/out.c",
+								},
+							},
+						},
+					},
+				},
+
+				{
+					.name = "numEnums",
+					.offset = 192,
+					.type = {
+						.type = FIELD_TYPE_UI64,
 					},
 				},
 			},
@@ -749,9 +777,228 @@ struct flr_programInfo info = {
 
 	.enums = (struct flr_enumInfo[]) {
 		{
-			.ID = 512,
-			.filename = "/home/randompigyt/Reflection/testFiles/enum.c",
-			.name = "enum Hello",
+			.ID = 2201,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "enum flr_types",
+			.numAliases = 0,
+			.aliases = (char (*[])) {
+
+				// No aliases
+
+			},
+			.numConstants = 41,
+			.constants = (struct flr_enumConstant[]) {
+				{
+					.name = "FIELD_TYPE_NONE",
+					.value = 0,
+				},
+
+				{
+					.name = "FIELD_TYPE_PTR",
+					.value = 1,
+				},
+
+				{
+					.name = "FIELD_TYPE_ARRAY",
+					.value = 2,
+				},
+
+				{
+					.name = "FIELD_TYPE_CONSTANT_ARRAY",
+					.value = 3,
+				},
+
+				{
+					.name = "FIELD_TYPE_STRUCT",
+					.value = 4,
+				},
+
+				{
+					.name = "FIELD_TYPE_UNION",
+					.value = 5,
+				},
+
+				{
+					.name = "FIELD_TYPE_RECORD",
+					.value = 6,
+				},
+
+				{
+					.name = "FIELD_TYPE_FUNCTION",
+					.value = 7,
+				},
+
+				{
+					.name = "FIELD_TYPE_ENUM",
+					.value = 8,
+				},
+
+				{
+					.name = "FIELD_TYPE_BITFIELD",
+					.value = 9,
+				},
+
+				{
+					.name = "FIELD_TYPE_VA_ARG",
+					.value = 10,
+				},
+
+				{
+					.name = "FIELD_TYPE_PRIMITIVE",
+					.value = 11,
+				},
+
+				{
+					.name = "FIELD_TYPE_CHAR",
+					.value = 12,
+				},
+
+				{
+					.name = "FIELD_TYPE_I8",
+					.value = 13,
+				},
+
+				{
+					.name = "FIELD_TYPE_I16",
+					.value = 14,
+				},
+
+				{
+					.name = "FIELD_TYPE_I32",
+					.value = 15,
+				},
+
+				{
+					.name = "FIELD_TYPE_I64",
+					.value = 16,
+				},
+
+				{
+					.name = "FIELD_TYPE_LONGLONG",
+					.value = 17,
+				},
+
+				{
+					.name = "FIELD_TYPE_UI8",
+					.value = 18,
+				},
+
+				{
+					.name = "FIELD_TYPE_UI16",
+					.value = 19,
+				},
+
+				{
+					.name = "FIELD_TYPE_UI32",
+					.value = 20,
+				},
+
+				{
+					.name = "FIELD_TYPE_UI64",
+					.value = 21,
+				},
+
+				{
+					.name = "FIELD_TYPE_ULONGLONG",
+					.value = 22,
+				},
+
+				{
+					.name = "FIELD_TYPE_FLOAT",
+					.value = 23,
+				},
+
+				{
+					.name = "FIELD_TYPE_DOUBLE",
+					.value = 24,
+				},
+
+				{
+					.name = "FIELD_TYPE_LONG_DOUBLE",
+					.value = 25,
+				},
+
+				{
+					.name = "FIELD_TYPE_VOID",
+					.value = 26,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_CHAR",
+					.value = -2147483636,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_I8",
+					.value = -2147483635,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_I16",
+					.value = -2147483634,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_I32",
+					.value = -2147483633,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_I64",
+					.value = -2147483632,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_LONGLONG",
+					.value = -2147483631,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_UI8",
+					.value = -2147483630,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_UI16",
+					.value = -2147483629,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_UI32",
+					.value = -2147483628,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_UI64",
+					.value = -2147483627,
+				},
+
+				{
+					.name = "FIELD_TYPE_GNU_EXT_COMPLEX_ULONGLONG",
+					.value = -2147483626,
+				},
+
+				{
+					.name = "FIELD_TYPE_COMPLEX_FLOAT",
+					.value = -2147483625,
+				},
+
+				{
+					.name = "FIELD_TYPE_COMPLEX_DOUBLE",
+					.value = -2147483624,
+				},
+
+				{
+					.name = "FIELD_TYPE_COMPLEX_LONG_DOUBLE",
+					.value = -2147483623,
+				},
+			},
+		},
+
+		{
+			.ID = 3038,
+			.filename = "/home/randompigyt/Reflection/emitted/out.c",
+			.name = "enum flr_recordTypes",
 			.numAliases = 0,
 			.aliases = (char (*[])) {
 
@@ -761,59 +1008,14 @@ struct flr_programInfo info = {
 			.numConstants = 2,
 			.constants = (struct flr_enumConstant[]) {
 				{
-					.name = "HI",
+					.name = "RECORD_TYPE_STRUCT",
 					.value = 0,
 				},
 
 				{
-					.name = "BYE",
+					.name = "RECORD_TYPE_UNION",
 					.value = 1,
 				},
-			},
-		},
-
-		{
-			.ID = 556,
-			.filename = "/home/randompigyt/Reflection/testFiles/enum.c",
-			.name = "",
-			.numAliases = 1,
-			.aliases = (char (*[])) {
-				"fu",
-			},
-			.numConstants = 3,
-			.constants = (struct flr_enumConstant[]) {
-				{
-					.name = "WHOO",
-					.value = 0,
-				},
-
-				{
-					.name = "WHEE",
-					.value = 1,
-				},
-
-				{
-					.name = "FUCK_ME",
-					.value = 2,
-				},
-			},
-		},
-
-		{
-			.ID = 712,
-			.filename = "/home/randompigyt/Reflection/testFiles/enum.c",
-			.name = "enum hell",
-			.numAliases = 0,
-			.aliases = (char (*[])) {
-
-				// No aliases
-
-			},
-			.numConstants = 0,
-			.constants = (struct flr_enumConstant[]) {
-
-				// No constants
-
 			},
 		},
 	},

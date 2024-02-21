@@ -34,7 +34,7 @@ $(TARGET): $(OBJS)
 	@echo built $(TARGET)
 
 
-$(OBJ)/%.o: $(SRC)/%.cpp
+$(OBJ)/%.o: $(SRC)/%.cpp $(INCLUDES)
 	@echo building $@
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo built $@

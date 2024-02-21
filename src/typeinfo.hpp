@@ -32,6 +32,7 @@ enum types {
 
   // Primitive
   // Defined by clang
+  FIELD_TYPE_CHAR = clang::BuiltinType::Kind::Char_S,
   FIELD_TYPE_I8 = clang::BuiltinType::Kind::SChar,
   FIELD_TYPE_I16 = clang::BuiltinType::Kind::Short,
   FIELD_TYPE_I32 = clang::BuiltinType::Kind::Int,
@@ -48,6 +49,7 @@ enum types {
   FIELD_TYPE_VOID = clang::BuiltinType::Void,
 
   // Complex types
+  FIELD_TYPE_GNU_EXT_COMPLEX_CHAR = REF_MAKE_COMPLEX(FIELD_TYPE_CHAR),
   FIELD_TYPE_GNU_EXT_COMPLEX_I8 = REF_MAKE_COMPLEX(FIELD_TYPE_I8),
   FIELD_TYPE_GNU_EXT_COMPLEX_I16 = REF_MAKE_COMPLEX(FIELD_TYPE_I16),
   FIELD_TYPE_GNU_EXT_COMPLEX_I32 = REF_MAKE_COMPLEX(FIELD_TYPE_I32),
