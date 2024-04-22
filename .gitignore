@@ -58,3 +58,4 @@ bin/
 obj/
 testFiles/
 emitted/
+compile_flags.txt
