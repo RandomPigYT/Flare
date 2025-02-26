@@ -413,9 +413,9 @@ void Reflection::emit(const struct Reflection::context &ctx) {
 
   addLine(s);
 
-  s.fileContents += "struct flr_programInfo flr_load() {\n\t";
+  s.fileContents += "struct flr_programInfo *flr_load() {\n\t";
 
-  s.fileContents += "return " + programInfoStruct + ";\n";
+  s.fileContents += "return &" + programInfoStruct + ";\n";
   s.fileContents += "}\n";
 
   FILE *f = fopen(ctx.outFile.c_str(), "w");

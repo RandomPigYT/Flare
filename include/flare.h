@@ -152,6 +152,6 @@ struct flr_programInfo {
   uint64_t numEnums;
 };
 
-struct flr_programInfo flr_load();
+struct flr_programInfo *flr_load();
 
 #endif // FLARE_H
